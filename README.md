@@ -1,12 +1,5 @@
-![banner](https://user-images.githubusercontent.com/4198311/89027545-461dd180-d35d-11ea-9972-7bf1b07f942d.png)
-
 # PPCA Raytracer 2022
-
-![GitHub top language](https://img.shields.io/github/languages/top/ACMClassCourse-2021/PPCA-Raytracer-2022)
-![License](https://img.shields.io/github/license/ACMClassCourse-2021/PPCA-Raytracer-2022)
-![GitHub repo size](https://img.shields.io/github/repo-size/ACMClassCourse-2021/PPCA-Raytracer-2022)
-![GitHub Workflow Status](https://img.shields.io/github/workflow/status/ACMClassCourse-2021/PPCA-Raytracer-2022/CI)
-
+# Hahaha, UnsignedLemon has just edited this file!
 ## 课程介绍
 
 - 本项目为 2021-2022 学年暑期小学期课程
