@@ -84,3 +84,15 @@ impl Vec3{
 		return self / len;
 	}
 }
+
+pub fn dot(val1:Vec3, val2:Vec3) -> f64{
+	val1.x * val2.x + val1.y * val2.y + val1.z * val2.z;
+}
+
+pub fn cross (val1: Vec3, val2:Vec3) -> Vec3{
+	Vec3{
+		x: val1.y*val2.z - val1.z*val2.y,
+		y: val1.z*val2.x - val1.x*val2.z,
+		z: val1.x*val2.y - val1.y*val2.x,
+	}
+}
