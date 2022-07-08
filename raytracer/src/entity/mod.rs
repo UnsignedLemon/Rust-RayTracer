@@ -1,5 +1,6 @@
 // This is mod entity.
 // Hittables are entities.
+#![allow(unused_variables)]
 
 use crate::graphics::ray;
 use crate::math_support::*;
@@ -11,6 +12,7 @@ pub trait CanHit{
 	fn get_hit_time (&self, target_ray: &ray::Ray) -> f64{
 		-1.0 		// Not hit
 	}
+	
 	fn get_hit_color(&self, target_ray: &Ray) -> Vec3{
 		DEFAULT_COLOR		// Default color: color missing.
 	}
@@ -72,7 +74,7 @@ impl CanHit for Sphere{
     	if delta < 0.0 {
     	    return -1.0; 	// Not hit.
     	} else {
-    		return (-b - delta.sqrt());		// First hit time.
+    		return -b - delta.sqrt();		// First hit time.
    	 	}
 	}
 	

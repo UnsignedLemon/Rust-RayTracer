@@ -1,3 +1,5 @@
+#![allow(unused_variables)]
+
 use std::{fs::File, process::exit};
 use image::{ImageBuffer, RgbImage};
 use console::style;
@@ -9,7 +11,6 @@ pub mod math_support;
 
 use math_support::*;
 
-use graphics::*;
 use graphics::ray::Ray;
 
 use entity::*;
