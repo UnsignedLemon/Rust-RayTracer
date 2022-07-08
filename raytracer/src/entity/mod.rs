@@ -16,6 +16,8 @@ pub trait CanHit{
 	fn get_hit_color(&self, target_ray: &Ray) -> Vec3{
 		DEFAULT_COLOR		// Default color: color missing.
 	}
+	
+	
 }
 
 //------------------------    Struct Plain    ------------------------------------------

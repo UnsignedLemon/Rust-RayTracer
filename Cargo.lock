@@ -370,6 +370,7 @@ dependencies = [
  "console",
  "image",
  "indicatif",
+ "lazy_static",
 ]
 
 [[package]]
