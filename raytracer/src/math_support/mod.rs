@@ -47,6 +47,20 @@ impl ops::Mul<f64> for Vec3{
 	}
 }
 
+impl ops::Mul<Vec3> for f64{
+	type Output = Vec3;
+
+	fn mul(self, val:Vec3) -> Vec3{
+		Vec3{
+			x: self * val.x,
+			y: self * val.y,
+			z: self * val.z,
+		}
+	}
+
+}
+
+
 impl ops::Div<f64> for Vec3{
 	type Output = Vec3;
 
@@ -86,7 +100,7 @@ impl Vec3{
 }
 
 pub fn dot(val1:Vec3, val2:Vec3) -> f64{
-	val1.x * val2.x + val1.y * val2.y + val1.z * val2.z;
+	val1.x * val2.x + val1.y * val2.y + val1.z * val2.z
 }
 
 pub fn cross (val1: Vec3, val2:Vec3) -> Vec3{
