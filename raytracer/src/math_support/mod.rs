@@ -159,7 +159,26 @@ pub fn rand_normalized_vec() -> Vec3 {
     res.normalize()
 }
 
+pub fn is_front_face(dir: Vec3, normal: Vec3) -> bool {
+    dot(dir, normal) < EPS
+}
+
 pub fn reflect(dir: Vec3, normal: Vec3) -> Vec3 {
     // Normal must be normalized.
     dir - (dot(dir, normal) * normal) * 2.0
+}
+
+pub fn refract(dir: Vec3, normal: Vec3, ratio: f64) -> Vec3 {
+    let cos_theta = -dot(dir, normal);
+    let res_perp = ratio * (dir + cos_theta * normal);
+    let perp_len = res_perp.get_len();
+    let perp_len = (1.0 - perp_len * perp_len).sqrt();
+    let res_para = if is_front_face(dir, normal) {
+        -1.0
+    } else {
+        1.0
+    } * perp_len
+        * normal;
+
+    res_perp + res_para
 }

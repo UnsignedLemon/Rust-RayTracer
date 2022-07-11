@@ -63,12 +63,55 @@ impl Scatter for Metal {
     }
 }
 
-//---------------------------    Struct Metal    -----------------------------------------
+//---------------------------    Struct Dielectric    ------------------------------------
+
+pub struct Dielectric {
+    ir: f64,
+}
+
+impl Dielectric {
+    pub fn make_detc(ir: f64) -> Dielectric {
+        Dielectric { ir }
+    }
+
+    fn reflectance(cos_theta: f64, ratio: f64) -> f64 {
+        let r0: f64 = (1.0 - ratio) / (1.0 + ratio);
+        let r0 = r0 * r0;
+        r0 + (1.0 - r0) * (1.0 - cos_theta).powf(5.0)
+    }
+}
+
+impl Scatter for Dielectric {
+    fn do_scatter(&self, target_ray: &Ray, normal: Vec3) -> Ray {
+        let normal = normal.normalize();
+        let dir = target_ray.get_dir();
+
+        let refraction_ratio = if is_front_face(dir, normal) {
+            1.0 / self.ir
+        } else {
+            self.ir
+        };
+        let cos_theta = -dot(dir, normal);
+        let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
+
+        let cannot_refract: bool = refraction_ratio * sin_theta > 1.0;
+        let new_dir: Vec3 = if cannot_refract
+            || Dielectric::reflectance(cos_theta, refraction_ratio) > rand_0_1()
+        {
+            reflect(dir, normal)
+        } else {
+            refract(dir, normal, refraction_ratio)
+        };
+
+        Ray::make_ray(target_ray.get_pos(), new_dir)
+    }
+}
 
 //---------------------------    Enum for Materials    -----------------------------------
 pub enum Mat {
     Lmb(Lambertian),
     Mtl(Metal),
+    Detc(Dielectric),
 }
 
 impl Mat {
@@ -81,10 +124,16 @@ impl Mat {
         Mat::Mtl(Metal::make_mtl(Vec3::make_vec3(x, y, z), fuzz))
     }
 
+    pub fn make_mat_detc(ir: f64) -> Mat {
+        // Index of refraction only.
+        Mat::Detc(Dielectric::make_detc(ir))
+    }
+
     pub fn scatter(&self, target_ray: &Ray, normal: Vec3) -> Ray {
         match self {
             Mat::Lmb(tmp) => tmp.do_scatter(target_ray, normal),
             Mat::Mtl(tmp) => tmp.do_scatter(target_ray, normal),
+            Mat::Detc(tmp) => tmp.do_scatter(target_ray, normal),
         }
     }
 
@@ -92,6 +141,7 @@ impl Mat {
         match self {
             Mat::Lmb(tmp) => tmp.albedo,
             Mat::Mtl(tmp) => tmp.albedo,
+            Mat::Detc(tmp) => Vec3::make_vec3(1.0, 1.0, 1.0), // Pure glass.
         }
     }
 }

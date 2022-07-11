@@ -27,7 +27,7 @@ const DEFAULT_COLOR: Vec3 = Vec3 {
 };
 
 const RATIO: f64 = 16.0 / 9.0;
-const WIDTH: f64 = 800.0;
+const WIDTH: f64 = 400.0;
 const HEIGHT: f64 = WIDTH / RATIO;
 
 const VIEWPORT_HEIGHT: f64 = 2.0;

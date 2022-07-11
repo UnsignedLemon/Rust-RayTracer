@@ -33,9 +33,9 @@ impl World {
             )),
             Entity::Sph(Sphere::make_sphere(
                 origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH)
-                    + Vec3::make_vec3(-0.7, 0.0, 0.0),
+                    + Vec3::make_vec3(-0.6, 0.4, 0.0),
                 0.3,
-                Mat::make_mat_mtl(0.9, 0.6, 0.96, 1.0),
+                Mat::make_mat_detc(1.5),
             )),
         ];
         World { obj_list: new_list }
