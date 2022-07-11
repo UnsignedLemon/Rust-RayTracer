@@ -32,7 +32,7 @@ impl Scatter for Lambertian {
         let mut new_dir: Vec3 = normal + rand_normalized_vec();
         if close_to(new_dir.get_len(), 0.0) {
             new_dir = normal;
-   		}
+        }
         Ray::make_ray(target_ray.get_pos(), new_dir)
     }
 }
@@ -46,17 +46,18 @@ pub struct Metal {
 
 impl Metal {
     pub fn make_mtl(albedo: Vec3, fuzz: f64) -> Metal {
-        Metal { albedo,fuzz, }
+        Metal { albedo, fuzz }
     }
 }
 
 impl Scatter for Metal {
     fn do_scatter(&self, target_ray: &Ray, normal: Vec3) -> Ray {
         let normal = normal.normalize();
-        let mut new_dir: Vec3 = reflect(target_ray.get_dir(), normal) + self.fuzz * rand_normalized_vec();
+        let mut new_dir: Vec3 =
+            reflect(target_ray.get_dir(), normal) + self.fuzz * rand_normalized_vec();
         if close_to(new_dir.get_len(), 0.0) {
-        	new_dir = normal;
-        } 
+            new_dir = normal;
+        }
 
         Ray::make_ray(target_ray.get_pos(), new_dir)
     }
@@ -75,7 +76,8 @@ impl Mat {
         Mat::Lmb(Lambertian::make_lmb(Vec3::make_vec3(x, y, z)))
     }
 
-    pub fn make_mat_mtl(x: f64, y: f64, z: f64, fuzz: f64) -> Mat {		// Albedo with fuzz.
+    pub fn make_mat_mtl(x: f64, y: f64, z: f64, fuzz: f64) -> Mat {
+        // Albedo with fuzz.
         Mat::Mtl(Metal::make_mtl(Vec3::make_vec3(x, y, z), fuzz))
     }
 

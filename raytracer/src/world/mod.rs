@@ -27,12 +27,13 @@ impl World {
                 Mat::make_mat_lmb(0.5, 0.5, 0.4),
             )),
             Entity::Sph(Sphere::make_sphere(
-                origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH) + Vec3::make_vec3(0.7,0.0,0.0),
+                origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH) + Vec3::make_vec3(0.7, 0.0, 0.0),
                 0.3,
                 Mat::make_mat_mtl(0.8, 0.8, 0.96, 0.3),
             )),
             Entity::Sph(Sphere::make_sphere(
-                origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH) + Vec3::make_vec3(-0.7,0.0,0.0),
+                origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH)
+                    + Vec3::make_vec3(-0.7, 0.0, 0.0),
                 0.3,
                 Mat::make_mat_mtl(0.9, 0.6, 0.96, 1.0),
             )),
