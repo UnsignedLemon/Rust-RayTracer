@@ -19,11 +19,11 @@ pub struct World {
 impl World {
     pub fn make_world() -> World {
         let new_list: Vec<Entity> = vec![
-       		Entity::Pln(Plain::make_plain(-0.3)),
-		    Entity::Sph(Sphere::make_sphere(
-		        origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH),
-		        0.3,
-		    )),
+            Entity::Pln(Plain::make_plain(-0.3)),
+            Entity::Sph(Sphere::make_sphere(
+                origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH),
+                0.3,
+            )),
         ];
         World { obj_list: new_list }
     }

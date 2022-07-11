@@ -111,7 +111,7 @@ impl CanHit for Sphere {
         let tm: f64 = self.get_hit_time(&target_ray);
         let hit_pos: Vec3 = target_ray.get_pos() + tm * target_ray.get_dir();
         let hit_pos = hit_pos - self.centre;
-        hit_pos.normalize()  // As the color of the surface.
+        hit_pos.normalize() // As the color of the surface.
     }
 
     fn get_hit_normal(&self, pos: Vec3) -> Vec3 {
