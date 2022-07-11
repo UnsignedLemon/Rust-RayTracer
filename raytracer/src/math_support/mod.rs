@@ -2,7 +2,9 @@
 
 //---------------------------    Module math_support    ----------------------------------------------------------
 
+use rand::Rng;
 use std::ops;
+pub const EPS:f64 = 0.0000001;
 
 #[derive(Debug,Clone,Copy)]
 pub struct Vec3{		// Not using template. It's f32.
@@ -60,7 +62,6 @@ impl ops::Mul<Vec3> for f64{
 
 }
 
-
 impl ops::Div<f64> for Vec3{
 	type Output = Vec3;
 
@@ -79,13 +80,10 @@ impl ops::Div<f64> for Vec3{
 	}
 }
 
+//------------------------------    Implementation of Vec3    ---------------------------------
 impl Vec3{
 	pub fn make_vec3(x:f64, y:f64, z:f64) -> Vec3{		// Construct Function of Vec3
-		Vec3{
-			x,
-			y,
-			z,
-		}
+		Vec3{x,y,z,}
 	}
 	
 	pub fn get_len(self) -> f64{
@@ -97,8 +95,14 @@ impl Vec3{
 		let len:f64 = self.get_len();
 		return self / len;
 	}
+	
+	pub fn sqrt_for_gamma_correction(self) -> Vec3{
+		return Vec3::make_vec3(self.x.sqrt(),self.y.sqrt(),self.z.sqrt());
+	}
 }
 
+
+//-------------------------------    Global utilities    ------------------------------------------
 pub fn dot(val1:Vec3, val2:Vec3) -> f64{
 	val1.x * val2.x + val1.y * val2.y + val1.z * val2.z
 }
@@ -109,4 +113,30 @@ pub fn cross (val1: Vec3, val2:Vec3) -> Vec3{
 		y: val1.z*val2.x - val1.x*val2.z,
 		z: val1.x*val2.y - val1.y*val2.x,
 	}
+}
+
+pub fn close_to(val:f64, target:f64) -> bool{		// Target shall be 0/1.
+	return (val > target-EPS) && (val < target+EPS);
+}
+
+pub fn close_to_unitary(val:Vec3) -> bool{
+	return close_to(val.get_len(),1.0);
+}
+
+pub fn rand_0_1() -> f64{		// Random number between 0 & 1.
+	let mut rng = rand::thread_rng();
+	let val:f64 =rng.gen::<f64>();
+	return val;
+}
+
+pub fn rand_abs_1() -> f64{		// Random number between -1 & 1.
+	return rand_0_1() * 2.0 - 1.0;
+}
+
+pub fn rand_normalized_vec() -> Vec3{
+	let mut res:Vec3 = Vec3::make_vec3(rand_abs_1(),rand_abs_1(),rand_abs_1());
+	while res.get_len() > 1.0 {
+		res = Vec3::make_vec3(rand_abs_1(),rand_abs_1(),rand_abs_1());
+	}
+	return res.normalize();
 }

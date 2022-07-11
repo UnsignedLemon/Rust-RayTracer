@@ -5,8 +5,8 @@ pub use math_support::Vec3;
 
 #[derive(Debug,Copy,Clone)]
 pub struct Ray{ 
-	pos:Vec3,
-	dir:Vec3,
+	pub pos:Vec3,
+	pub dir:Vec3,
 }
 
 impl Ray{
