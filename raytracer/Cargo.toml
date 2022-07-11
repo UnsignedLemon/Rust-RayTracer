@@ -13,3 +13,4 @@ console = "0.9.1"    	# console text format
 indicatif = "0.16.2" 	# progress bar
 
 lazy_static = "1.4.0"	# use lazy_static to generate global variables
+rand = "0.8.3"			# used to generate random direction of scattering

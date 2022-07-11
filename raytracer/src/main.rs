@@ -12,12 +12,14 @@ extern crate lazy_static;
 pub mod graphics;
 pub mod entity;
 pub mod math_support;
+pub mod world;
 
 use math_support::*;
-use graphics::ray::Ray;
-use entity::*;
+use world::World;
 
 //---------------------------------    Const Definations    --------------------------------------------	
+
+//---------------------------------    Camera & Picture    ----------------------------------------------
 const DEFAULT_COLOR:Vec3 = Vec3{x:1.0,y:0.0,z:0.5,};
 
 const RATIO:f64 = 16.0 / 9.0;
@@ -32,41 +34,18 @@ const height:u32 = HEIGHT as u32;
 const width:u32 = WIDTH as u32;
 const quality:u8 = 60; // From 0 to 100
 
-
+//--------------------------------    Coordinate    -----------------------------------------------------
 const origin:Vec3 = Vec3{x:0.0, y:0.0, z:0.0,};
 const hor:Vec3 = Vec3{x:VIEWPORT_WIDTH, y:0.0, z:0.0,};
 const ver:Vec3 = Vec3{x:0.0, y:VIEWPORT_HEIGHT, z:0.0,};
 
+//--------------------------------     Render Parameters    ---------------------------------------------
+const ITERATION_DEPTH:i32 = 50;
+const SAMPLES_PER_PIXEL:i32 = 100;
+
 lazy_static::lazy_static!{
 	static ref lower_left_corner:Vec3 = origin - hor/2.0 - ver/2.0 - Vec3{x:0.0, y:0.0, z:VIEWPORT_DEPTH};
-	static ref background: entity::Plain = entity::Plain::make_plain(-1.0);
-	static ref s1: entity::Sphere = entity::Sphere::make_sphere(origin - Vec3::make_vec3(0.0,0.0,VIEWPORT_DEPTH) , 0.3);
-}
-
-//-------------------------------------    Render function     ----------------------------------------
-fn render_ray(u:f64, v:f64) -> Vec3{		
-	// Trace ray with its origin in (0,0,0) and its direction pointing at far plain	coord (u,v);
-	// Return color vector whose full value is 1.0 instead of 255.
-	
-	let target_ray:Ray = Ray::make_ray(
-		origin ,
-		*lower_left_corner + hor*u + ver*v - origin,
-	);
-	
-	let bg_tm = background.get_hit_time(&target_ray);
-	let sphere_tm = s1.get_hit_time(&target_ray);
-	
-	
-	return match (bg_tm > 0.0, sphere_tm > 0.0){
-		(false,false) => Vec3::make_vec3(1.0,1.0,1.0),
-		(true,false) => background.get_hit_color(&target_ray),
-		(false,true) => s1.get_hit_color(&target_ray),
-		_ => {
-			if sphere_tm < bg_tm {s1.get_hit_color(&target_ray)}
-			else {background.get_hit_color(&target_ray)}
-		},		// Always bg. However, this shows an ordinary process of render order checking.
-	}
-	
+	static ref wld:World = World::make_world();
 }
 
 fn main() {
@@ -94,19 +73,12 @@ fn main() {
         .progress_chars("#>-"));
 
 //------------------------------------    Render loop    -------------------------------------------
+
     for y in 0..height {
         for x in 0..width {
-			// Calculate ray's pointing coord.
-			// No anti-aliasing currently.
-			let u:f64 = (x as f64) / (width as f64);
-			let v:f64 = (y as f64) / (height as f64);
 			
-			// Do rendering with anti-aliasing.
-			let dlt:f64 = 0.5 / (width as f64);
-			let color_vec:Vec3 = 0.25 * (	render_ray(u,v) +
-											render_ray(u+dlt, v) +
-											render_ray(u, v+dlt) +
-											render_ray(u+dlt,v+dlt));
+			// Do render with anti-aliasing and gamma-correction.
+			let color_vec:Vec3 = graphics::render_pixel(x,y);
 		
 			// Image generating.
 			let pixel_color =[
