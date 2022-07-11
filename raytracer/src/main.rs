@@ -19,7 +19,6 @@ use math_support::*;
 use world::World;
 
 //---------------------------------    Const Definations    ------------------------------
-const PI: f64 = 3.1415926535;
 
 //---------------------------------    Camera & Picture    -------------------------------
 const DEFAULT_COLOR: Vec3 = Vec3 {
@@ -52,7 +51,7 @@ lazy_static::lazy_static! {
     static ref wld:World = World::make_world();
     static ref cmr:Camera = Camera::make_camera(Vec3::make_vec3(0.0,0.0,0.0),
                                                 Vec3::make_vec3(0.0,0.0,1.0),
-                                                PI/2.0,
+                                                std::f64::consts::PI / 2.0,
     );
 }
 
