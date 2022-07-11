@@ -9,7 +9,6 @@ use crate::math_support::*;
 use crate::math_support::EPS;
 use crate::origin;
 use crate::ITERATION_DEPTH;
-use crate::VIEWPORT_DEPTH;
 
 //-------------------------------    Struct World    -------------------------------------
 
@@ -22,20 +21,24 @@ impl World {
         let new_list: Vec<Entity> = vec![
             Entity::Pln(Plain::make_plain(-0.3, Mat::make_mat_lmb(0.5, 0.7, 0.6))),
             Entity::Sph(Sphere::make_sphere(
-                origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH),
+                origin,
                 0.3,
-                Mat::make_mat_lmb(0.5, 0.5, 0.4),
+                Mat::make_mat_lmb(0.5, 0.4, 0.4),
             )),
             Entity::Sph(Sphere::make_sphere(
-                origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH) + Vec3::make_vec3(0.7, 0.0, 0.0),
+                origin + Vec3::make_vec3(0.6, 0.0, 0.0),
                 0.3,
                 Mat::make_mat_mtl(0.8, 0.8, 0.96, 0.3),
             )),
             Entity::Sph(Sphere::make_sphere(
-                origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH)
-                    + Vec3::make_vec3(-0.6, 0.4, 0.0),
+                origin + Vec3::make_vec3(-0.6, 0.0, 0.0),
                 0.3,
                 Mat::make_mat_detc(1.5),
+            )),
+            Entity::Sph(Sphere::make_sphere(
+                origin + Vec3::make_vec3(-0.6, 0.0, 0.0),
+                0.25,
+                Mat::make_mat_detc(1.0 / 1.5),
             )),
         ];
         World { obj_list: new_list }

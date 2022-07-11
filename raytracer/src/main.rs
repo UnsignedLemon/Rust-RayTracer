@@ -14,10 +14,12 @@ pub mod graphics;
 pub mod math_support;
 pub mod world;
 
+use graphics::Camera;
 use math_support::*;
 use world::World;
 
 //---------------------------------    Const Definations    ------------------------------
+const PI: f64 = 3.1415926535;
 
 //---------------------------------    Camera & Picture    -------------------------------
 const DEFAULT_COLOR: Vec3 = Vec3 {
@@ -27,12 +29,11 @@ const DEFAULT_COLOR: Vec3 = Vec3 {
 };
 
 const RATIO: f64 = 16.0 / 9.0;
-const WIDTH: f64 = 400.0;
+const WIDTH: f64 = 800.0;
 const HEIGHT: f64 = WIDTH / RATIO;
 
 const VIEWPORT_HEIGHT: f64 = 2.0;
 const VIEWPORT_WIDTH: f64 = RATIO * VIEWPORT_HEIGHT;
-const VIEWPORT_DEPTH: f64 = 1.0;
 
 const height: u32 = HEIGHT as u32;
 const width: u32 = WIDTH as u32;
@@ -44,21 +45,15 @@ const origin: Vec3 = Vec3 {
     y: 0.0,
     z: 0.0,
 };
-const hor: Vec3 = Vec3 {
-    x: VIEWPORT_WIDTH,
-    y: 0.0,
-    z: 0.0,
-};
-const ver: Vec3 = Vec3 {
-    x: 0.0,
-    y: VIEWPORT_HEIGHT,
-    z: 0.0,
-};
 
 //--------------------------------    World Settings    ----------------------------------
 lazy_static::lazy_static! {
-    static ref lower_left_corner:Vec3 = origin - hor/2.0 - ver/2.0 - Vec3{x:0.0, y:0.0, z:VIEWPORT_DEPTH};
+//    static ref lower_left_corner:Vec3 = origin - hor/2.0 - ver/2.0 - Vec3{x:0.0, y:0.0, z:VIEWPORT_DEPTH};
     static ref wld:World = World::make_world();
+    static ref cmr:Camera = Camera::make_camera(Vec3::make_vec3(0.0,0.0,0.0),
+                                                Vec3::make_vec3(0.0,0.0,1.0),
+                                                PI/2.0,
+    );
 }
 
 //--------------------------------     Render Parameters    ------------------------------
