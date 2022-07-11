@@ -159,8 +159,20 @@ pub fn rand_normalized_vec() -> Vec3 {
     res.normalize()
 }
 
+pub fn rand_normalized_disk_vec() -> Vec3 {
+    let mut res: Vec3 = Vec3::make_vec3(rand_abs_1(), rand_abs_1(), 0.0);
+    while res.get_len() > 1.0 {
+        res = Vec3::make_vec3(rand_abs_1(), rand_abs_1(), 0.0);
+    }
+    res.normalize()
+}
+
 pub fn is_front_face(dir: Vec3, normal: Vec3) -> bool {
     dot(dir, normal) < EPS
+}
+
+pub fn dist(pos1: Vec3, pos2: Vec3) -> f64 {
+    (pos2 - pos1).get_len()
 }
 
 pub fn reflect(dir: Vec3, normal: Vec3) -> Vec3 {

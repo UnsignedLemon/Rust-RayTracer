@@ -28,7 +28,7 @@ const DEFAULT_COLOR: Vec3 = Vec3 {
 };
 
 const RATIO: f64 = 16.0 / 9.0;
-const WIDTH: f64 = 800.0;
+const WIDTH: f64 = 400.0;
 const HEIGHT: f64 = WIDTH / RATIO;
 
 const VIEWPORT_HEIGHT: f64 = 2.0;
@@ -50,8 +50,9 @@ lazy_static::lazy_static! {
 //    static ref lower_left_corner:Vec3 = origin - hor/2.0 - ver/2.0 - Vec3{x:0.0, y:0.0, z:VIEWPORT_DEPTH};
     static ref wld:World = World::make_world();
     static ref cmr:Camera = Camera::make_camera(Vec3::make_vec3(0.0,0.0,0.0),
-                                                Vec3::make_vec3(0.0,0.0,1.0),
+                                                Vec3::make_vec3(-1.0,0.7,1.0),
                                                 std::f64::consts::PI / 2.0,
+                                                0.01,
     );
 }
 

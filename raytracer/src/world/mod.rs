@@ -18,7 +18,7 @@ pub struct World {
 
 impl World {
     pub fn make_world() -> World {
-        let new_list: Vec<Entity> = vec![
+        let mut new_list: Vec<Entity> = vec![
             Entity::Pln(Plain::make_plain(-0.3, Mat::make_mat_lmb(0.5, 0.7, 0.6))),
             Entity::Sph(Sphere::make_sphere(
                 origin,
@@ -41,6 +41,48 @@ impl World {
                 Mat::make_mat_detc(1.0 / 1.5),
             )),
         ];
+
+        let size_per_cell: f64 = 0.15;
+        let ball_radius: f64 = 0.04;
+        let max_offset: f64 = size_per_cell - 2.0 * ball_radius;
+
+        for i in -11..11 {
+            for j in -11..11 {
+                let x: f64 = (i as f64) * size_per_cell + rand_0_1() * max_offset;
+                let z: f64 = (j as f64) * size_per_cell + rand_0_1() * max_offset;
+                let target_pos: Vec3 = Vec3::make_vec3(x, ball_radius, z);
+                if dist(target_pos, origin) < 0.3 + ball_radius
+                    || dist(target_pos, Vec3::make_vec3(0.6, 0.0, 0.0)) < 0.3 + ball_radius
+                    || dist(target_pos, Vec3::make_vec3(-0.6, 0.0, 0.0)) < 0.3 + ball_radius
+                {
+                    continue;
+                }
+
+                let rand_material = rand_0_1();
+                let rand_albedo = Vec3::make_vec3(rand_0_1(), rand_0_1(), rand_0_1());
+
+                if rand_material > 0.9 {
+                    new_list.push(Entity::Sph(Sphere::make_sphere(
+                        target_pos,
+                        ball_radius,
+                        Mat::make_mat_detc(1.5),
+                    )));
+                } else if rand_material > 0.8 {
+                    new_list.push(Entity::Sph(Sphere::make_sphere(
+                        target_pos,
+                        ball_radius,
+                        Mat::make_mat_mtl(rand_albedo.x, rand_albedo.y, rand_albedo.z, rand_0_1()),
+                    )));
+                } else {
+                    new_list.push(Entity::Sph(Sphere::make_sphere(
+                        target_pos,
+                        ball_radius,
+                        Mat::make_mat_lmb(rand_albedo.x, rand_albedo.y, rand_albedo.z),
+                    )));
+                }
+            }
+        }
+
         World { obj_list: new_list }
     }
 

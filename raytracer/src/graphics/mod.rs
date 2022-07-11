@@ -39,20 +39,22 @@ pub struct Camera {
 
     pub lower_left_corner: Vec3,
     pub viewport_depth: f64,
+    pub blur_rad: f64,
 }
 
 impl Camera {
-    pub fn make_camera(lookat: Vec3, pos: Vec3, deg: f64) -> Camera {
+    pub fn make_camera(lookat: Vec3, pos: Vec3, deg: f64, blur_rad: f64) -> Camera {
         let dir = (lookat - pos).normalize();
         let world_up: Vec3 = Vec3::make_vec3(0.0, 1.0, 0.0);
 
         let right = cross(dir, world_up);
-        let right = right.normalize() * VIEWPORT_WIDTH;
+        let right = right.normalize();
         let up = cross(right, dir);
-        let up = up.normalize() * VIEWPORT_HEIGHT;
+        let up = up.normalize();
 
         let viewport_depth = 0.5 * VIEWPORT_HEIGHT / ((0.5 * deg).tan());
-        let lower_left_corner = dir * viewport_depth - right * 0.5 - up * 0.5;
+        let lower_left_corner =
+            dir * viewport_depth - right * VIEWPORT_WIDTH * 0.5 - up * VIEWPORT_HEIGHT * 0.5;
 
         Camera {
             dir,
@@ -61,14 +63,22 @@ impl Camera {
             up,
             lower_left_corner,
             viewport_depth,
+            blur_rad,
         }
     }
 
     pub fn get_ray_of_pixel(&self, u: f64, v: f64) -> Ray {
         // u/v can be non-integer, which is used for multi-sampling.
+        // Target_ray generated from a disk plain to simulate the defocusing blur.
+        let offset: Vec3 = self.blur_rad * rand_normalized_disk_vec();
+        let offset: Vec3 = self.right * offset.x + self.up * offset.y;
+
         Ray::make_ray(
-            self.pos,
-            self.lower_left_corner + self.right * u / WIDTH + self.up * v / HEIGHT,
+            self.pos + offset,
+            self.lower_left_corner
+                + self.right * VIEWPORT_WIDTH * u / WIDTH
+                + self.up * VIEWPORT_HEIGHT * v / HEIGHT
+                - offset,
         )
     }
 }
