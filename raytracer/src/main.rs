@@ -8,7 +8,7 @@ use std::{fs::File, process::exit};
 
 extern crate lazy_static;
 
-//---------------------------------    Modules    ------------------------------------------------------
+//---------------------------------    Modules    ----------------------------------------
 pub mod entity;
 pub mod graphics;
 pub mod math_support;
@@ -17,9 +17,9 @@ pub mod world;
 use math_support::*;
 use world::World;
 
-//---------------------------------    Const Definations    --------------------------------------------
+//---------------------------------    Const Definations    ------------------------------
 
-//---------------------------------    Camera & Picture    ----------------------------------------------
+//---------------------------------    Camera & Picture    -------------------------------
 const DEFAULT_COLOR: Vec3 = Vec3 {
     x: 1.0,
     y: 0.0,
@@ -38,7 +38,7 @@ const height: u32 = HEIGHT as u32;
 const width: u32 = WIDTH as u32;
 const quality: u8 = 60; // From 0 to 100
 
-//--------------------------------    Coordinate    -----------------------------------------------------
+//--------------------------------    Coordinate    --------------------------------------
 const origin: Vec3 = Vec3 {
     x: 0.0,
     y: 0.0,
@@ -55,17 +55,18 @@ const ver: Vec3 = Vec3 {
     z: 0.0,
 };
 
-//--------------------------------     Render Parameters    ---------------------------------------------
-const ITERATION_DEPTH: i32 = 50;
-const SAMPLES_PER_PIXEL: i32 = 100;
-
+//--------------------------------    World Settings    ----------------------------------
 lazy_static::lazy_static! {
     static ref lower_left_corner:Vec3 = origin - hor/2.0 - ver/2.0 - Vec3{x:0.0, y:0.0, z:VIEWPORT_DEPTH};
     static ref wld:World = World::make_world();
 }
 
+//--------------------------------     Render Parameters    ------------------------------
+const ITERATION_DEPTH: i32 = 50;
+const SAMPLES_PER_PIXEL: i32 = 100;
+
 fn main() {
-    //----------------------------------------    Init    ------------------------------------------------------
+    //----------------------------------------    Init    --------------------------------
     let path = "output/output.jpg";
     print!("{}[2J", 27 as char); // Clear screen
     print!("{esc}[2J{esc}[1;1H", esc = 27 as char); // Set cursor position as 1,1
@@ -88,7 +89,7 @@ fn main() {
         .template("{spinner:.green} [{elapsed_precise}] [{wide_bar:.cyan/blue}] [{pos}/{len}] ({eta})")
         .progress_chars("#>-"));
 
-    //------------------------------------    Render loop    -------------------------------------------
+    //------------------------------------    Render loop    -----------------------------
 
     for y in 0..height {
         for x in 0..width {
@@ -108,7 +109,7 @@ fn main() {
         }
     }
 
-    //----------------------------------    Never Mind    -------------------------------------------------
+    //----------------------------------    Never Mind    --------------------------------
 
     progress.finish();
 

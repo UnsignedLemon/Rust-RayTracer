@@ -50,6 +50,18 @@ impl ops::Mul<f64> for Vec3 {
     }
 }
 
+impl ops::Mul<Vec3> for Vec3 {
+    type Output = Vec3;
+
+    fn mul(self, val: Vec3) -> Vec3 {
+        Vec3 {
+            x: self.x * val.x,
+            y: self.y * val.y,
+            z: self.z * val.z,
+        }
+    }
+}
+
 impl ops::Mul<Vec3> for f64 {
     type Output = Vec3;
 
@@ -145,4 +157,9 @@ pub fn rand_normalized_vec() -> Vec3 {
         res = Vec3::make_vec3(rand_abs_1(), rand_abs_1(), rand_abs_1());
     }
     res.normalize()
+}
+
+pub fn reflect(dir: Vec3, normal: Vec3) -> Vec3 {
+    // Normal must be normalized.
+    dir - (dot(dir, normal) * normal) * 2.0
 }

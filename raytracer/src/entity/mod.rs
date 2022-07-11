@@ -33,11 +33,8 @@ pub struct Plain {
 }
 
 impl Plain {
-    pub fn make_plain(y: f64) -> Plain {
-        Plain {
-            y,
-            material: Mat::make_mat_lmb(),
-        }
+    pub fn make_plain(y: f64, material: Mat) -> Plain {
+        Plain { y, material }
     }
 }
 
@@ -77,11 +74,11 @@ pub struct Sphere {
 }
 
 impl Sphere {
-    pub fn make_sphere(centre: Vec3, r: f64) -> Sphere {
+    pub fn make_sphere(centre: Vec3, r: f64, material: Mat) -> Sphere {
         Sphere {
             centre,
             r,
-            material: Mat::make_mat_lmb(),
+            material,
         }
     }
     pub fn get_centre(&self) -> Vec3 {
@@ -138,6 +135,14 @@ impl Entity {
             Entity::Pln(tmp) => tmp.material.scatter(target_ray, normal),
             Entity::Sph(tmp) => tmp.material.scatter(target_ray, normal),
             _ => Ray::make_ray(crate::origin, Vec3::make_vec3(0.0, 1.0, 0.0)),
+        }
+    }
+
+    pub fn get_albedo(&self) -> Vec3 {
+        match self {
+            Entity::Pln(tmp) => tmp.material.get_albedo(),
+            Entity::Sph(tmp) => tmp.material.get_albedo(),
+            _ => Vec3::make_vec3(0.0, 0.0, 0.0),
         }
     }
 }

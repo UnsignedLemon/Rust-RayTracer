@@ -1,6 +1,7 @@
 // Struct World to store all objs.
 #![allow(unused_variables)]
 
+use crate::entity::material::*;
 use crate::entity::*;
 use crate::graphics::ray::Ray;
 use crate::math_support::*;
@@ -19,10 +20,21 @@ pub struct World {
 impl World {
     pub fn make_world() -> World {
         let new_list: Vec<Entity> = vec![
-            Entity::Pln(Plain::make_plain(-0.3)),
+            Entity::Pln(Plain::make_plain(-0.3, Mat::make_mat_lmb(0.5, 0.7, 0.6))),
             Entity::Sph(Sphere::make_sphere(
                 origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH),
                 0.3,
+                Mat::make_mat_lmb(0.5, 0.5, 0.4),
+            )),
+            Entity::Sph(Sphere::make_sphere(
+                origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH) + Vec3::make_vec3(0.7,0.0,0.0),
+                0.3,
+                Mat::make_mat_mtl(0.8, 0.8, 0.96, 0.3),
+            )),
+            Entity::Sph(Sphere::make_sphere(
+                origin - Vec3::make_vec3(0.0, 0.0, VIEWPORT_DEPTH) + Vec3::make_vec3(-0.7,0.0,0.0),
+                0.3,
+                Mat::make_mat_mtl(0.9, 0.6, 0.96, 1.0),
             )),
         ];
         World { obj_list: new_list }
@@ -57,7 +69,7 @@ impl World {
             let target_ray = &(target_obj.scatter(target_ray, normal));
 
             //return crate::DEFAULT_COLOR;
-            0.5 * self.do_trace(target_ray, depth - 1)
+            (target_obj.get_albedo()) * self.do_trace(target_ray, depth - 1)
         }
     }
 
