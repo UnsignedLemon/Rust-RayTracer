@@ -46,11 +46,16 @@ impl World {
         let ball_radius: f64 = 0.04;
         let max_offset: f64 = size_per_cell - 2.0 * ball_radius;
 
-        for i in -11..11 {
-            for j in -11..11 {
+        for i in -11..21 {
+            for j in -11..21 {
+                let do_or_not = rand_0_1();
+                if do_or_not > 0.4 {
+                    continue;
+                }
+
                 let x: f64 = (i as f64) * size_per_cell + rand_0_1() * max_offset;
                 let z: f64 = (j as f64) * size_per_cell + rand_0_1() * max_offset;
-                let target_pos: Vec3 = Vec3::make_vec3(x, ball_radius, z);
+                let target_pos: Vec3 = Vec3::make_vec3(x, ball_radius - 0.3, z);
                 if dist(target_pos, origin) < 0.3 + ball_radius
                     || dist(target_pos, Vec3::make_vec3(0.6, 0.0, 0.0)) < 0.3 + ball_radius
                     || dist(target_pos, Vec3::make_vec3(-0.6, 0.0, 0.0)) < 0.3 + ball_radius
