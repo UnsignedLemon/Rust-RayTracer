@@ -19,7 +19,6 @@ use math_support::*;
 use world::World;
 
 //---------------------------------    Const Definations    ------------------------------
-const LIGHT_SPEED: f64 = 1000.0;
 
 //---------------------------------    Camera & Picture    -------------------------------
 const RATIO: f64 = 16.0 / 9.0;
@@ -44,16 +43,16 @@ const origin: Vec3 = Vec3 {
 lazy_static::lazy_static! {
 //    static ref lower_left_corner:Vec3 = origin - hor/2.0 - ver/2.0 - Vec3{x:0.0, y:0.0, z:VIEWPORT_DEPTH};
     static ref wld:World = World::make_world();
-    static ref cmr:Camera = Camera::make_camera(Vec3::make_vec3(0.0,0.4,0.0),
-                                                Vec3::make_vec3(-0.7,0.4,0.6),
-                                                std::f64::consts::PI / 2.0,
+    static ref cmr:Camera = Camera::make_camera(Vec3::make_vec3(0.0,0.0,0.0),
+                                                Vec3::make_vec3(-1.9,0.2,1.9),
+                                                std::f64::consts::PI / 6.0,
                                                 0.005, 0.0, 1.0,
     );
 }
 
 //--------------------------------     Render Parameters    ------------------------------
 const ITERATION_DEPTH: i32 = 50;
-const SAMPLES_PER_PIXEL: i32 = 300;
+const SAMPLES_PER_PIXEL: i32 = 500;
 
 fn main() {
     //----------------------------------------    Init    --------------------------------

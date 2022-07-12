@@ -19,7 +19,7 @@ pub fn render_pixel(x: u32, y: u32) -> Vec3 {
 
         let target_ray: Ray = cmr.get_ray_of_pixel(u, v);
 
-        color = color + wld.trace_ray_color(&target_ray, cmr.min_tm, cmr.max_tm);
+        color = color + wld.trace_ray_color(&target_ray);
 
         samples -= 1;
     }

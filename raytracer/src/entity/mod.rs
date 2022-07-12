@@ -8,13 +8,12 @@ pub mod material;
 use crate::entity::material::*;
 use crate::graphics::ray;
 use crate::math_support::*;
-use crate::LIGHT_SPEED;
 use ray::Ray;
 
 //--------------------------------------------------------------------------------------
 // Trait CanHit
 pub trait CanHit {
-    fn get_hit_time(&self, target_ray: &ray::Ray, min_tm: f64, max_tm: f64) -> f64 {
+    fn get_hit_time(&self, target_ray: &ray::Ray) -> f64 {
         -1.0 // Not hit
     }
 
@@ -35,7 +34,7 @@ impl Plain {
 }
 
 impl CanHit for Plain {
-    fn get_hit_time(&self, target_ray: &ray::Ray, min_tm: f64, max_tm: f64) -> f64 {
+    fn get_hit_time(&self, target_ray: &ray::Ray) -> f64 {
         let product: f64 = dot(
             target_ray.get_dir(),
             Vec3 {
@@ -47,13 +46,8 @@ impl CanHit for Plain {
         if product < 0.0 {
             -1.0
         } else {
-            let y_spd = -target_ray.get_dir().y * LIGHT_SPEED;
-            let res = target_ray.get_tm() + (target_ray.get_pos().y - self.y) / y_spd;
-            if res < min_tm || res > max_tm {
-                -1.0
-            } else {
-                res
-            }
+            let y_spd = -target_ray.get_dir().y;
+            (target_ray.get_pos().y - self.y) / y_spd
         }
     }
 
@@ -89,12 +83,12 @@ impl Sphere {
 }
 
 impl CanHit for Sphere {
-    fn get_hit_time(&self, target_ray: &Ray, min_tm: f64, max_tm: f64) -> f64 {
+    fn get_hit_time(&self, target_ray: &Ray) -> f64 {
         let oc: Vec3 = target_ray.get_pos() - self.get_centre(target_ray.get_tm());
-        let relative_spd = target_ray.get_dir() * LIGHT_SPEED - self.v;
+        let dir = target_ray.get_dir();
 
-        let a = dot(relative_spd, relative_spd);
-        let b = dot(oc, relative_spd);
+        let a = 1.0;
+        let b = dot(oc, dir);
         let c = dot(oc, oc) - self.r * self.r;
 
         let delta = b.powf(2.0) - a * c;
@@ -106,13 +100,10 @@ impl CanHit for Sphere {
                 take_time = (-b + delta.sqrt()) / a;
             }
             if take_time < EPS {
-                return -1.0;
-            }
-            let res: f64 = take_time + target_ray.get_tm();
-            if res < min_tm || res > max_tm {
                 -1.0
-            } else {
-                res
+            }
+            else{
+            	take_time
             }
         }
     }
@@ -154,10 +145,10 @@ impl Entity {
 }
 
 impl CanHit for Entity {
-    fn get_hit_time(&self, target_ray: &Ray, min_tm: f64, max_tm: f64) -> f64 {
+    fn get_hit_time(&self, target_ray: &Ray) -> f64 {
         match self {
-            Entity::Pln(tmp) => tmp.get_hit_time(target_ray, min_tm, max_tm),
-            Entity::Sph(tmp) => tmp.get_hit_time(target_ray, min_tm, max_tm),
+            Entity::Pln(tmp) => tmp.get_hit_time(target_ray),
+            Entity::Sph(tmp) => tmp.get_hit_time(target_ray),
             _ => -1.0,
         }
     }

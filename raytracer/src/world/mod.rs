@@ -1,14 +1,11 @@
 // Struct World to store all objs.
 #![allow(unused_variables)]
 
-use crate::LIGHT_SPEED;
-
 use crate::entity::material::*;
 use crate::entity::*;
 use crate::graphics::ray::Ray;
 use crate::math_support::*;
 
-use crate::math_support::EPS;
 use crate::origin;
 use crate::ITERATION_DEPTH;
 
@@ -74,7 +71,7 @@ impl World {
                 let rand_material = rand_0_1();
                 let rand_albedo = Vec3::make_vec3(rand_0_1(), rand_0_1(), rand_0_1());
 
-                let rand_spd = Vec3::make_vec3(0.0, rand_0_1() * 0.06, 0.0);
+                let rand_spd = Vec3::make_vec3(0.0, rand_0_1() * 0.07, 0.0);
 
                 if rand_material > 0.9 {
                     new_list.push(Entity::Sph(Sphere::make_sphere(
@@ -103,19 +100,21 @@ impl World {
         World { obj_list: new_list }
     }
 
-    fn do_trace(&self, target_ray: &Ray, depth: i32, min_tm: f64, max_tm: f64) -> Vec3 {
+    fn do_trace(&self, target_ray: &Ray, depth: i32) -> Vec3 {
         if depth < 0 {
             return Vec3::make_vec3(0.0, 0.0, 0.0);
         }
+		let cur_tm = target_ray.get_tm();
+        
         let mut target_obj = &(Entity::make_none_entity());
         let mut first_hit_time: f64 = -1.0;
 
         for obj in &(self.obj_list) {
-            let tm: f64 = obj.get_hit_time(target_ray, min_tm, max_tm);
+            let tm: f64 = obj.get_hit_time(target_ray);
             if tm < 0.0 {
                 continue;
             }
-            if first_hit_time < EPS || first_hit_time > tm {
+            if first_hit_time < 0.0 || first_hit_time > tm {
                 first_hit_time = tm;
                 target_obj = obj;
             }
@@ -125,21 +124,14 @@ impl World {
             let p: f64 = 0.5 * (target_ray.get_dir().y + 1.0);
             (1.0 - p) * Vec3::make_vec3(1.0, 1.0, 1.0) + p * Vec3::make_vec3(0.5, 0.7, 1.0)
         } else {
-            //println!("x:{}, y:{}, z:{}", target_ray.get_pos().x,target_ray.get_pos().y,target_ray.get_pos().z);
-            //println!("hit sphere");
-
-            let pos: Vec3 = target_ray.get_pos()
-                + (first_hit_time - target_ray.get_tm()) * target_ray.get_dir() * LIGHT_SPEED;
-            let normal: Vec3 = target_obj.get_hit_normal(pos, first_hit_time);
-            let target_ray = &(Ray::make_ray(pos, target_ray.get_dir(), first_hit_time));
+            let pos: Vec3 = target_ray.get_pos() + first_hit_time * target_ray.get_dir();
+            let normal: Vec3 = target_obj.get_hit_normal(pos, cur_tm);
+            let target_ray = &(Ray::make_ray(pos, target_ray.get_dir(), cur_tm));
             let target_ray = &(target_obj.scatter(target_ray, normal));
-
-            (target_obj.get_albedo()) * self.do_trace(target_ray, depth - 1, min_tm, max_tm)
+			(target_obj.get_albedo()) * self.do_trace(target_ray, depth - 1)
         }
     }
 
     // Here comes the most important function that actually do the tracing process of target ray.
-    pub fn trace_ray_color(&self, target_ray: &Ray, min_tm: f64, max_tm: f64) -> Vec3 {
-        self.do_trace(target_ray, ITERATION_DEPTH, min_tm, max_tm)
-    }
+    pub fn trace_ray_color(&self, target_ray: &Ray) -> Vec3 { self.do_trace(target_ray, ITERATION_DEPTH) }
 }
