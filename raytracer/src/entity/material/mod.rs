@@ -33,7 +33,7 @@ impl Scatter for Lambertian {
         if close_to(new_dir.get_len(), 0.0) {
             new_dir = normal;
         }
-        Ray::make_ray(target_ray.get_pos(), new_dir)
+        Ray::make_ray(target_ray.get_pos(), new_dir, target_ray.get_tm())
     }
 }
 
@@ -59,7 +59,7 @@ impl Scatter for Metal {
             new_dir = normal;
         }
 
-        Ray::make_ray(target_ray.get_pos(), new_dir)
+        Ray::make_ray(target_ray.get_pos(), new_dir, target_ray.get_tm())
     }
 }
 
@@ -84,17 +84,21 @@ impl Dielectric {
 impl Scatter for Dielectric {
     fn do_scatter(&self, target_ray: &Ray, normal: Vec3) -> Ray {
         let normal = normal.normalize();
-        let dir = target_ray.get_dir();
+        let dir = target_ray.get_dir().normalize();
 
         let refraction_ratio = if is_front_face(dir, normal) {
             1.0 / self.ir
         } else {
             self.ir
         };
-        let cos_theta = -dot(dir, normal);
+        let mut cos_theta = dot(dir, normal);
+        if cos_theta < 0.0 {
+            cos_theta = -cos_theta;
+        }
         let sin_theta = (1.0 - cos_theta * cos_theta).sqrt();
 
         let cannot_refract: bool = refraction_ratio * sin_theta > 1.0;
+
         let new_dir: Vec3 = if cannot_refract
             || Dielectric::reflectance(cos_theta, refraction_ratio) > rand_0_1()
         {
@@ -103,7 +107,7 @@ impl Scatter for Dielectric {
             refract(dir, normal, refraction_ratio)
         };
 
-        Ray::make_ray(target_ray.get_pos(), new_dir)
+        Ray::make_ray(target_ray.get_pos(), new_dir, target_ray.get_tm())
     }
 }
 

@@ -19,16 +19,11 @@ use math_support::*;
 use world::World;
 
 //---------------------------------    Const Definations    ------------------------------
+const LIGHT_SPEED: f64 = 1000.0;
 
 //---------------------------------    Camera & Picture    -------------------------------
-const DEFAULT_COLOR: Vec3 = Vec3 {
-    x: 1.0,
-    y: 0.0,
-    z: 0.5,
-};
-
 const RATIO: f64 = 16.0 / 9.0;
-const WIDTH: f64 = 1200.0;
+const WIDTH: f64 = 800.0;
 const HEIGHT: f64 = WIDTH / RATIO;
 
 const VIEWPORT_HEIGHT: f64 = 2.0;
@@ -49,10 +44,10 @@ const origin: Vec3 = Vec3 {
 lazy_static::lazy_static! {
 //    static ref lower_left_corner:Vec3 = origin - hor/2.0 - ver/2.0 - Vec3{x:0.0, y:0.0, z:VIEWPORT_DEPTH};
     static ref wld:World = World::make_world();
-    static ref cmr:Camera = Camera::make_camera(Vec3::make_vec3(0.0,0.2,0.0),
-                                                Vec3::make_vec3(-1.0,0.2,1.0),
+    static ref cmr:Camera = Camera::make_camera(Vec3::make_vec3(0.0,0.7,0.0),
+                                                Vec3::make_vec3(-1.0,0.7,1.0),
                                                 std::f64::consts::PI / 2.0,
-                                                0.01,
+                                                0.005, 0.0, 1.0,
     );
 }
 
@@ -85,7 +80,6 @@ fn main() {
         .progress_chars("#>-"));
 
     //------------------------------------    Render loop    -----------------------------
-
     for y in 0..height {
         for x in 0..width {
             // Do render with anti-aliasing and gamma-correction.

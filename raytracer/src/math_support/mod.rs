@@ -4,7 +4,7 @@
 
 use rand::Rng;
 use std::ops;
-pub const EPS: f64 = 0.0000001;
+pub const EPS: f64 = 0.000000001;
 
 #[derive(Debug, Clone, Copy)]
 pub struct Vec3 {
@@ -193,4 +193,8 @@ pub fn refract(dir: Vec3, normal: Vec3, ratio: f64) -> Vec3 {
         * normal;
 
     res_perp + res_para
+}
+
+pub fn print_vec3(xx: Vec3) {
+    println!("x={}, y={}, z={}", xx.x, xx.y, xx.z);
 }

@@ -8,7 +8,6 @@ use ray::Ray;
 pub fn render_pixel(x: u32, y: u32) -> Vec3 {
     let mut samples = SAMPLES_PER_PIXEL;
     let mut color: Vec3 = Vec3::make_vec3(0.0, 0.0, 0.0);
-
     while samples > 0 {
         // Anti aliasing with SAMPLES_PER_PIXEL samples.
 
@@ -20,11 +19,10 @@ pub fn render_pixel(x: u32, y: u32) -> Vec3 {
 
         let target_ray: Ray = cmr.get_ray_of_pixel(u, v);
 
-        color = color + wld.trace_ray_color(&target_ray);
+        color = color + wld.trace_ray_color(&target_ray, cmr.min_tm, cmr.max_tm);
 
         samples -= 1;
     }
-
     color = color / (SAMPLES_PER_PIXEL as f64);
     color = color.sqrt_for_gamma_correction(); // Gamma correction.
     color
@@ -40,10 +38,19 @@ pub struct Camera {
     pub lower_left_corner: Vec3,
     pub viewport_depth: f64,
     pub blur_rad: f64,
+    pub min_tm: f64,
+    pub max_tm: f64,
 }
 
 impl Camera {
-    pub fn make_camera(lookat: Vec3, pos: Vec3, deg: f64, blur_rad: f64) -> Camera {
+    pub fn make_camera(
+        lookat: Vec3,
+        pos: Vec3,
+        deg: f64,
+        blur_rad: f64,
+        min_tm: f64,
+        max_tm: f64,
+    ) -> Camera {
         let dir = (lookat - pos).normalize();
         let world_up: Vec3 = Vec3::make_vec3(0.0, 1.0, 0.0);
 
@@ -64,6 +71,8 @@ impl Camera {
             lower_left_corner,
             viewport_depth,
             blur_rad,
+            min_tm,
+            max_tm,
         }
     }
 
@@ -73,12 +82,15 @@ impl Camera {
         let offset: Vec3 = self.blur_rad * rand_normalized_disk_vec();
         let offset: Vec3 = self.right * offset.x + self.up * offset.y;
 
+        let t = rand_0_1();
+
         Ray::make_ray(
             self.pos + offset,
             self.lower_left_corner
                 + self.right * VIEWPORT_WIDTH * u / WIDTH
                 + self.up * VIEWPORT_HEIGHT * v / HEIGHT
                 - offset,
+            t * self.min_tm + (1.0 - t) * self.max_tm,
         )
     }
 }
