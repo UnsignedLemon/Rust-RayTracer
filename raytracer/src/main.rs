@@ -22,7 +22,7 @@ use world::World;
 
 //---------------------------------    Camera & Picture    -------------------------------
 const RATIO: f64 = 16.0 / 9.0;
-const WIDTH: f64 = 800.0;
+const WIDTH: f64 = 400.0;
 const HEIGHT: f64 = WIDTH / RATIO;
 
 const VIEWPORT_HEIGHT: f64 = 2.0;
@@ -31,6 +31,9 @@ const VIEWPORT_WIDTH: f64 = RATIO * VIEWPORT_HEIGHT;
 const height: u32 = HEIGHT as u32;
 const width: u32 = WIDTH as u32;
 const quality: u8 = 60; // From 0 to 100
+
+const flash_t0: f64 = 0.0;
+const flash_t1: f64 = 1.0;
 
 //--------------------------------    Coordinate    --------------------------------------
 const origin: Vec3 = Vec3 {
@@ -41,18 +44,18 @@ const origin: Vec3 = Vec3 {
 
 //--------------------------------    World Settings    ----------------------------------
 lazy_static::lazy_static! {
-//    static ref lower_left_corner:Vec3 = origin - hor/2.0 - ver/2.0 - Vec3{x:0.0, y:0.0, z:VIEWPORT_DEPTH};
+
     static ref wld:World = World::make_world();
     static ref cmr:Camera = Camera::make_camera(Vec3::make_vec3(0.0,0.0,0.0),
                                                 Vec3::make_vec3(-1.9,0.2,1.9),
                                                 std::f64::consts::PI / 6.0,
-                                                0.005, 0.0, 1.0,
+                                                0.005, flash_t0, flash_t1,
     );
 }
 
 //--------------------------------     Render Parameters    ------------------------------
 const ITERATION_DEPTH: i32 = 50;
-const SAMPLES_PER_PIXEL: i32 = 500;
+const SAMPLES_PER_PIXEL: i32 = 10;
 
 fn main() {
     //----------------------------------------    Init    --------------------------------

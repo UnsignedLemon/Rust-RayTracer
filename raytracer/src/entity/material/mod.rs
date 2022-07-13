@@ -12,7 +12,7 @@ pub trait Scatter {
 }
 
 //---------------------------    Struct Lambertian    ------------------------------------
-
+#[derive(Clone)]
 pub struct Lambertian {
     pub albedo: Vec3,
 }
@@ -38,7 +38,7 @@ impl Scatter for Lambertian {
 }
 
 //-------------------------------    Struct Metal    -------------------------------------
-
+#[derive(Clone)]
 pub struct Metal {
     pub albedo: Vec3,
     fuzz: f64,
@@ -64,7 +64,7 @@ impl Scatter for Metal {
 }
 
 //---------------------------    Struct Dielectric    ------------------------------------
-
+#[derive(Clone)]
 pub struct Dielectric {
     ir: f64,
 }
@@ -112,6 +112,7 @@ impl Scatter for Dielectric {
 }
 
 //---------------------------    Enum for Materials    -----------------------------------
+#[derive(Clone)]
 pub enum Mat {
     Lmb(Lambertian),
     Mtl(Metal),

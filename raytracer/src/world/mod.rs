@@ -2,23 +2,133 @@
 #![allow(unused_variables)]
 
 use crate::entity::material::*;
+use crate::entity::Aabb;
 use crate::entity::*;
 use crate::graphics::ray::Ray;
 use crate::math_support::*;
 
+use Option;
+
+use crate::flash_t0;
+use crate::flash_t1;
 use crate::origin;
 use crate::ITERATION_DEPTH;
+
+//-------------------------------    Struct Bvh node    ----------------------------------
+#[derive(Clone)]
+pub struct Node {
+    pub lch: Option<Box<Node>>,
+    pub rch: Option<Box<Node>>,
+    pub hit_box: Option<Aabb>,
+    pub binding_obj: Option<Entity>,
+}
+
+impl Node {
+    pub fn make_node() -> Node {
+        Node {
+            lch: None,
+            rch: None,
+            hit_box: None,
+            binding_obj: None,
+        }
+    }
+
+    pub fn bind_entity(&mut self, obj: Entity) {
+        self.hit_box = obj.gen_aabb(flash_t0, flash_t1);
+        self.binding_obj = Some(obj);
+    }
+}
+
+//-----------------------    Build & Find in bvh    ------------------------------------
+fn build_bvh(mut obj_list: Vec<Entity>) -> Option<Box<Node>> {
+    match obj_list.len() {
+        0 => Some(Box::new(Node::make_node())),
+        1 => {
+            let mut cur: Node = Node::make_node();
+            cur.bind_entity(obj_list[0].clone());
+            Some(Box::new(cur))
+        }
+        _ => {
+            obj_list.sort();
+            let mid = obj_list.len() / 2;
+
+            let mut lvec = vec![];
+            for ele in obj_list.iter().take(mid) {
+                lvec.push(ele.clone());
+            }
+
+            let mut rvec = vec![];
+            for ele in obj_list.iter().skip(mid) {
+                rvec.push(ele.clone());
+            }
+
+            let mut cur: Node = Node::make_node();
+            cur.lch = build_bvh(lvec);
+            cur.rch = build_bvh(rvec);
+            cur.binding_obj = None;
+            let laabb: Aabb = cur.lch.as_ref().unwrap().clone().hit_box.unwrap();
+            let raabb: Aabb = cur.rch.as_ref().unwrap().clone().hit_box.unwrap();
+            cur.hit_box = Some(Aabb::merge_aabb(&laabb, &raabb));
+
+            Some(Box::new(cur))
+        }
+    }
+}
+
+fn just_hit_it(cur: &Node, target_ray: &Ray) -> (Entity, f64) {
+    match &cur.binding_obj {
+        Some(obj) => {
+            // It's a leaf node and there's an obj to hit.
+            let tm: f64 = obj.get_hit_time(target_ray);
+            if tm > EPS {
+               (obj.clone(), tm)
+            } else {
+                (Entity::make_none_entity(), -1.0)
+            }
+        }
+        None => {
+            if let Some(bx) = &cur.hit_box {
+                if !bx.can_hit(target_ray) {
+                    return (Entity::make_none_entity(), -1.0);
+                }
+            }
+            let mut l_rec = (Entity::make_none_entity(), -1.0);
+            let mut r_rec = (Entity::make_none_entity(), -1.0);
+            if let Some(l) = &cur.lch {
+                l_rec = just_hit_it(l, target_ray);
+            }
+            if let Some(r) = &cur.rch {
+                r_rec = just_hit_it(r, target_ray);
+            }
+
+            if l_rec.1 < EPS {
+                return r_rec;
+            }
+            if r_rec.1 < EPS {
+                return l_rec;
+            }
+
+            if l_rec.1 < r_rec.1 {
+                l_rec
+            } else {
+                r_rec
+            }
+        }
+    }
+}
 
 //-------------------------------    Struct World    -------------------------------------
 
 pub struct World {
-    pub obj_list: Vec<Entity>,
+    pub bg: Entity,
+    bvh_root: Node,
 }
 
 impl World {
     pub fn make_world() -> World {
+        let bg: Entity = Entity::Pln(Plain::make_plain(-0.3, Mat::make_mat_lmb(0.5, 0.7, 0.6)));
+
         let mut new_list: Vec<Entity> = vec![
-            Entity::Pln(Plain::make_plain(-0.3, Mat::make_mat_lmb(0.5, 0.7, 0.6))),
             Entity::Sph(Sphere::make_sphere(
                 origin,
                 0.3,
@@ -97,27 +207,30 @@ impl World {
                 }
             }
         }
-        World { obj_list: new_list }
+
+        let rt = build_bvh(new_list);
+        World {
+            bg,
+            bvh_root: rt.unwrap().as_ref().clone(),
+        }
     }
 
     fn do_trace(&self, target_ray: &Ray, depth: i32) -> Vec3 {
         if depth < 0 {
             return Vec3::make_vec3(0.0, 0.0, 0.0);
         }
-		let cur_tm = target_ray.get_tm();
-        
-        let mut target_obj = &(Entity::make_none_entity());
-        let mut first_hit_time: f64 = -1.0;
+        let cur_tm = target_ray.get_tm();
 
-        for obj in &(self.obj_list) {
-            let tm: f64 = obj.get_hit_time(target_ray);
-            if tm < 0.0 {
-                continue;
-            }
-            if first_hit_time < 0.0 || first_hit_time > tm {
-                first_hit_time = tm;
-                target_obj = obj;
-            }
+        let mut first_hit_time: f64 = (&self.bg).get_hit_time(target_ray);
+        let mut target_obj = &self.bg;
+
+        let hit_rec = just_hit_it(&self.bvh_root, target_ray);
+        let hit_obj = hit_rec.0;
+        let hit_obj_time = hit_rec.1;
+
+        if first_hit_time < EPS || (hit_obj_time > EPS && hit_obj_time < first_hit_time) {
+            first_hit_time = hit_obj_time;
+            target_obj = &hit_obj;
         }
 
         if first_hit_time < 0.0 {
@@ -128,10 +241,12 @@ impl World {
             let normal: Vec3 = target_obj.get_hit_normal(pos, cur_tm);
             let target_ray = &(Ray::make_ray(pos, target_ray.get_dir(), cur_tm));
             let target_ray = &(target_obj.scatter(target_ray, normal));
-			(target_obj.get_albedo()) * self.do_trace(target_ray, depth - 1)
+            (target_obj.get_albedo()) * self.do_trace(target_ray, depth - 1)
         }
     }
 
     // Here comes the most important function that actually do the tracing process of target ray.
-    pub fn trace_ray_color(&self, target_ray: &Ray) -> Vec3 { self.do_trace(target_ray, ITERATION_DEPTH) }
+    pub fn trace_ray_color(&self, target_ray: &Ray) -> Vec3 {
+        self.do_trace(target_ray, ITERATION_DEPTH)
+    }
 }

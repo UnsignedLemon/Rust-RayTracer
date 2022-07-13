@@ -195,6 +195,35 @@ pub fn refract(dir: Vec3, normal: Vec3, ratio: f64) -> Vec3 {
     res_perp + res_para
 }
 
+pub fn min(v0: f64, v1: f64) -> f64 {
+    if v0 < v1 {
+        v0
+    } else {
+        v1
+    }
+}
+
+pub fn max(v0: f64, v1: f64) -> f64 {
+    if v0 > v1 {
+        v0
+    } else {
+        v1
+    }
+}
+
+pub fn calc_time_range(x0: f64, x1: f64, pos: f64, dir: f64) -> (f64, f64) {
+    if close_to(dir, 0.0) {
+        if pos >= x0 && pos <= x1 {
+            return (-std::f64::INFINITY, std::f64::INFINITY);
+        } else {
+            return (-1.0, -1.0);
+        }
+    }
+    let t0: f64 = (x0 - pos) / dir;
+    let t1: f64 = (x1 - pos) / dir;
+    (min(t0, t1), max(t0, t1))
+}
+
 pub fn print_vec3(xx: Vec3) {
     println!("x={}, y={}, z={}", xx.x, xx.y, xx.z);
 }
