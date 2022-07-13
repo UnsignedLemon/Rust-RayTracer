@@ -81,7 +81,7 @@ fn just_hit_it(cur: &Node, target_ray: &Ray) -> (Entity, f64) {
             // It's a leaf node and there's an obj to hit.
             let tm: f64 = obj.get_hit_time(target_ray);
             if tm > EPS {
-               (obj.clone(), tm)
+                (obj.clone(), tm)
             } else {
                 (Entity::make_none_entity(), -1.0)
             }
@@ -132,7 +132,7 @@ impl World {
             Entity::Sph(Sphere::make_sphere(
                 origin,
                 0.3,
-                Mat::make_mat_lmb(0.5, 0.4, 0.4),
+                Mat::make_mat_lghtsrc(0.9, 0.2, 0.2),
                 origin,
             )),
             Entity::Sph(Sphere::make_sphere(
@@ -234,14 +234,20 @@ impl World {
         }
 
         if first_hit_time < 0.0 {
-            let p: f64 = 0.5 * (target_ray.get_dir().y + 1.0);
-            (1.0 - p) * Vec3::make_vec3(1.0, 1.0, 1.0) + p * Vec3::make_vec3(0.5, 0.7, 1.0)
+            origin
+            //let p: f64 = 0.5 * (target_ray.get_dir().y + 1.0);
+            //(1.0 - p) * Vec3::make_vec3(1.0, 1.0, 1.0) + p * Vec3::make_vec3(0.5, 0.7, 1.0)
         } else {
-            let pos: Vec3 = target_ray.get_pos() + first_hit_time * target_ray.get_dir();
-            let normal: Vec3 = target_obj.get_hit_normal(pos, cur_tm);
-            let target_ray = &(Ray::make_ray(pos, target_ray.get_dir(), cur_tm));
-            let target_ray = &(target_obj.scatter(target_ray, normal));
-            (target_obj.get_albedo()) * self.do_trace(target_ray, depth - 1)
+            let target_color: Vec3 = target_obj.get_emission();
+            if target_color.x == 0.0 && target_color.y == 0.0 && target_color.z == 0.0 {
+                let pos: Vec3 = target_ray.get_pos() + first_hit_time * target_ray.get_dir();
+                let normal: Vec3 = target_obj.get_hit_normal(pos, cur_tm);
+                let target_ray = &(Ray::make_ray(pos, target_ray.get_dir(), cur_tm));
+                let target_ray = &(target_obj.scatter(target_ray, normal));
+                (target_obj.get_albedo()) * self.do_trace(target_ray, depth - 1)
+            } else {
+                target_color
+            }
         }
     }
 

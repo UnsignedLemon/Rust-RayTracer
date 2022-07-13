@@ -3,6 +3,7 @@
 
 use crate::graphics::ray::Ray;
 use crate::math_support::*;
+use crate::origin;
 
 //--------------------------    Trait Scatter    ----------------------------------------
 pub trait Scatter {
@@ -111,12 +112,27 @@ impl Scatter for Dielectric {
     }
 }
 
+//----------------------------    Light Source    --------------------------------------
+#[derive(Clone)]
+pub struct LightSource {
+    color: Vec3,
+}
+
+impl LightSource {
+    pub fn make_lghtsrc(color: Vec3) -> LightSource {
+        LightSource { color }
+    }
+    pub fn get_light_color(&self) -> Vec3 {
+        self.color
+    }
+}
 //---------------------------    Enum for Materials    -----------------------------------
 #[derive(Clone)]
 pub enum Mat {
     Lmb(Lambertian),
     Mtl(Metal),
     Detc(Dielectric),
+    Lghtsrc(LightSource),
 }
 
 impl Mat {
@@ -134,11 +150,23 @@ impl Mat {
         Mat::Detc(Dielectric::make_detc(ir))
     }
 
+    pub fn make_mat_lghtsrc(x: f64, y: f64, z: f64) -> Mat {
+        Mat::Lghtsrc(LightSource::make_lghtsrc(Vec3::make_vec3(x, y, z)))
+    }
+
+    pub fn get_light_color(&self) -> Vec3 {
+        match self {
+            Mat::Lghtsrc(tmp) => tmp.get_light_color(),
+            _ => origin,
+        }
+    }
+
     pub fn scatter(&self, target_ray: &Ray, normal: Vec3) -> Ray {
         match self {
             Mat::Lmb(tmp) => tmp.do_scatter(target_ray, normal),
             Mat::Mtl(tmp) => tmp.do_scatter(target_ray, normal),
             Mat::Detc(tmp) => tmp.do_scatter(target_ray, normal),
+            Mat::Lghtsrc(tmp) => Ray::make_ray(origin, Vec3::make_vec3(0.0, 1.0, 0.0), 0.0),
         }
     }
 
@@ -147,6 +175,7 @@ impl Mat {
             Mat::Lmb(tmp) => tmp.albedo,
             Mat::Mtl(tmp) => tmp.albedo,
             Mat::Detc(tmp) => Vec3::make_vec3(1.0, 1.0, 1.0), // Pure glass.
+            Mat::Lghtsrc(tmp) => origin,
         }
     }
 }

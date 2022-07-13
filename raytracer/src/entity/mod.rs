@@ -8,6 +8,7 @@ pub mod material;
 use crate::entity::material::*;
 use crate::graphics::ray;
 use crate::math_support::*;
+use crate::origin;
 use ray::Ray;
 
 //------------------------    Struct AABB    -------------------------------------------
@@ -211,6 +212,14 @@ pub enum Entity {
 impl Entity {
     pub fn make_none_entity() -> Entity {
         Entity::None
+    }
+
+    pub fn get_emission(&self) -> Vec3 {
+        match self {
+            Entity::Pln(tmp) => tmp.material.get_light_color(),
+            Entity::Sph(tmp) => tmp.material.get_light_color(),
+            Entity::None => origin,
+        }
     }
 
     pub fn scatter(&self, target_ray: &Ray, normal: Vec3) -> Ray {
