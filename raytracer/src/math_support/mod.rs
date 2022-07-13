@@ -224,6 +224,10 @@ pub fn calc_time_range(x0: f64, x1: f64, pos: f64, dir: f64) -> (f64, f64) {
     (min(t0, t1), max(t0, t1))
 }
 
+pub fn at(target_vec: Vec3, spd: Vec3, tm: f64) -> Vec3 {
+    target_vec + spd * tm
+}
+
 pub fn print_vec3(xx: Vec3) {
     println!("x={}, y={}, z={}", xx.x, xx.y, xx.z);
 }

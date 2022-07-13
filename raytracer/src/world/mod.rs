@@ -125,14 +125,132 @@ pub struct World {
 }
 
 impl World {
+    fn gen_rec(
+        obj_list: &mut Vec<Entity>,
+        pos: Vec3,
+        edg: (Vec3, Vec3, Vec3),
+        mmat: Mat,
+        vv: Vec3,
+    ) {
+        let v1 = pos;
+        let v2 = pos + edg.0;
+        let v4 = pos + edg.1;
+        let v3 = v2 + edg.1;
+        let v5 = v1 + edg.2;
+        let v6 = v2 + edg.2;
+        let v7 = v3 + edg.2;
+        let v8 = v4 + edg.2;
+
+        let inner_vertex = (v1 + v7) / 2.0;
+
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v1,
+            v2,
+            v4,
+            inner_vertex,
+            mmat.clone(),
+            vv,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v3,
+            v2,
+            v4,
+            inner_vertex,
+            mmat.clone(),
+            vv,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v5,
+            v6,
+            v8,
+            inner_vertex,
+            mmat.clone(),
+            vv,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v7,
+            v6,
+            v8,
+            inner_vertex,
+            mmat.clone(),
+            vv,
+        )));
+
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v2,
+            v3,
+            v6,
+            inner_vertex,
+            mmat.clone(),
+            vv,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v7,
+            v3,
+            v6,
+            inner_vertex,
+            mmat.clone(),
+            vv,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v1,
+            v4,
+            v5,
+            inner_vertex,
+            mmat.clone(),
+            vv,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v8,
+            v4,
+            v5,
+            inner_vertex,
+            mmat.clone(),
+            vv,
+        )));
+
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v1,
+            v2,
+            v5,
+            inner_vertex,
+            mmat.clone(),
+            vv,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v6,
+            v2,
+            v5,
+            inner_vertex,
+            mmat.clone(),
+            vv,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v4,
+            v3,
+            v8,
+            inner_vertex,
+            mmat.clone(),
+            vv,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v7,
+            v3,
+            v8,
+            inner_vertex,
+            mmat,
+            vv,
+        )));
+    }
+
     pub fn make_world() -> World {
-        let bg: Entity = Entity::Pln(Plain::make_plain(-0.3, Mat::make_mat_lmb(0.7, 0.6, 0.5)));
+        let bg: Entity = Entity::Pln(Plain::make_plain(-10.0, Mat::make_mat_lmb(0.7, 0.6, 0.5)));
 
         let mut new_list: Vec<Entity> = vec![
             Entity::Sph(Sphere::make_sphere(
                 origin,
                 0.3,
-                Mat::make_mat_lghtsrc(1.0, 0.7, 1.0),
+                Mat::make_mat_lghtsrc(0.8, 0.8, 0.95),
                 origin,
             )),
             Entity::Sph(Sphere::make_sphere(
@@ -154,6 +272,18 @@ impl World {
                 origin,
             )),
         ];
+
+        World::gen_rec(
+            &mut new_list,
+            Vec3::make_vec3(1.5, 0.7, 0.0),
+            (
+                Vec3::make_vec3(-0.25, 0.0, -0.25),
+                Vec3::make_vec3(0.25, 0.0, -0.25),
+                Vec3::make_vec3(0.0, -0.35, 0.0),
+            ),
+            Mat::make_mat_lmb(0.4, 0.4, 0.5),
+            origin,
+        );
 
         let size_per_cell: f64 = 0.15;
         let ball_radius: f64 = 0.04;

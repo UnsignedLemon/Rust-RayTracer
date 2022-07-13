@@ -46,8 +46,8 @@ const origin: Vec3 = Vec3 {
 lazy_static::lazy_static! {
 
     static ref wld:World = World::make_world();
-    static ref cmr:Camera = Camera::make_camera(Vec3::make_vec3(0.0,0.0,0.0),
-                                                Vec3::make_vec3(-1.9,0.2,1.9),
+    static ref cmr:Camera = Camera::make_camera(Vec3::make_vec3(0.0,0.1,0.0),
+                                                Vec3::make_vec3(-2.0,0.4,1.6),
                                                 std::f64::consts::PI / 6.0,
                                                 0.005, flash_t0, flash_t1,
     );
@@ -55,7 +55,7 @@ lazy_static::lazy_static! {
 
 //--------------------------------     Render Parameters    ------------------------------
 const ITERATION_DEPTH: i32 = 100;
-const SAMPLES_PER_PIXEL: i32 = 1000;
+const SAMPLES_PER_PIXEL: i32 = 500;
 
 fn main() {
     //----------------------------------------    Init    --------------------------------
