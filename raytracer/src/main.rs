@@ -55,7 +55,7 @@ lazy_static::lazy_static! {
 
 //--------------------------------     Render Parameters    ------------------------------
 const ITERATION_DEPTH: i32 = 100;
-const SAMPLES_PER_PIXEL: i32 = 500;
+const SAMPLES_PER_PIXEL: i32 = 1000;
 
 fn main() {
     //----------------------------------------    Init    --------------------------------
