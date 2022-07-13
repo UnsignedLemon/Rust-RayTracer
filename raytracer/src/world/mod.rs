@@ -126,13 +126,13 @@ pub struct World {
 
 impl World {
     pub fn make_world() -> World {
-        let bg: Entity = Entity::Pln(Plain::make_plain(-0.3, Mat::make_mat_lmb(0.5, 0.7, 0.6)));
+        let bg: Entity = Entity::Pln(Plain::make_plain(-0.3, Mat::make_mat_lmb(0.7, 0.6, 0.5)));
 
         let mut new_list: Vec<Entity> = vec![
             Entity::Sph(Sphere::make_sphere(
                 origin,
                 0.3,
-                Mat::make_mat_lghtsrc(0.9, 0.2, 0.2),
+                Mat::make_mat_lghtsrc(1.0, 0.7, 1.0),
                 origin,
             )),
             Entity::Sph(Sphere::make_sphere(
@@ -183,14 +183,27 @@ impl World {
 
                 let rand_spd = Vec3::make_vec3(0.0, rand_0_1() * 0.07, 0.0);
 
-                if rand_material > 0.9 {
+                if rand_material > 0.85 {
+                    new_list.push(Entity::Sph(Sphere::make_sphere(
+                        target_pos,
+                        ball_radius,
+                        Mat::make_mat_lghtsrc(
+                            rand_0_1() * 0.5 + 0.5,
+                            rand_0_1() * 0.5 + 0.5,
+                            rand_0_1() * 0.5 + 0.5,
+                        ),
+                        origin,
+                    )));
+                }
+
+                if rand_material > 0.75 {
                     new_list.push(Entity::Sph(Sphere::make_sphere(
                         target_pos,
                         ball_radius,
                         Mat::make_mat_detc(1.5),
                         rand_spd,
                     )));
-                } else if rand_material > 0.8 {
+                } else if rand_material > 0.6 {
                     new_list.push(Entity::Sph(Sphere::make_sphere(
                         target_pos,
                         ball_radius,
@@ -234,9 +247,9 @@ impl World {
         }
 
         if first_hit_time < 0.0 {
-            origin
-            //let p: f64 = 0.5 * (target_ray.get_dir().y + 1.0);
-            //(1.0 - p) * Vec3::make_vec3(1.0, 1.0, 1.0) + p * Vec3::make_vec3(0.5, 0.7, 1.0)
+            Vec3::make_vec3(0.15, 0.15, 0.18)
+        //    let p: f64 = 0.5 * (target_ray.get_dir().y + 1.0);
+        //    (1.0 - p) * Vec3::make_vec3(1.0, 1.0, 1.0) + p * Vec3::make_vec3(0.5, 0.7, 1.0)
         } else {
             let target_color: Vec3 = target_obj.get_emission();
             if target_color.x == 0.0 && target_color.y == 0.0 && target_color.z == 0.0 {
