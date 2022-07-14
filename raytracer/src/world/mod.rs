@@ -498,7 +498,7 @@ impl World {
         }
 
         if first_hit_time < 0.0 {
-            Vec3::make_vec3(0.1, 0.1, 0.12)
+            Vec3::make_vec3(0.0, 0.0, 0.02)
         //    let p: f64 = 0.5 * (target_ray.get_dir().y + 1.0);
         //    (1.0 - p) * Vec3::make_vec3(0.6, 0.6, 0.6) + p * Vec3::make_vec3(0.5, 0.7, 1.0)
         } else {
