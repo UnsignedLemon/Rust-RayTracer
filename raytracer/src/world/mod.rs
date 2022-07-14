@@ -154,7 +154,7 @@ impl World {
         let inner = rotate(Vec3::make_vec3(0.0, -3.0, 0.0), f);
 
         let mmat2: Mat = Mat::make_mat_mtl(1.0, 0.8, 0.9, 0.15);
-        let mmat: Mat = Mat::make_mat_detc(0.6, 0.6, 1.0, 2.0);
+        let mmat: Mat = Mat::make_mat_detc(0.6, 0.6, 1.0, 1.5);
         let mmat3: Mat = Mat::make_mat_detc(0.8, 0.8, 1.0, 6.0);
 
         obj_list.push(Entity::Tri(Triangle::make_triangle(
@@ -339,18 +339,12 @@ impl World {
         //Entity::Pln(Plain::make_plain(-10.0, Mat::make_mat_lghtsrc(0.5, 0.6, 0.8)));
 
         let mut new_list: Vec<Entity> = vec![
-            Entity::Sph(Sphere::make_sphere(
-                origin + Vec3::make_vec3(0.0, 40.0, 0.0),
-                30.0,
-                Mat::make_mat_lghtsrc(1.0, 1.0, 1.0),
+     /*       Entity::Sph(Sphere::make_sphere(
+                origin + Vec3::make_vec3(0.0, 0.0, 60.0),
+                40.0,
+                Mat::make_mat_lghtsrc(0.9, 0.9, 1.0),
                 origin,
-            )),
-            Entity::Sph(Sphere::make_sphere(
-                origin + Vec3::make_vec3(-60.0, 65.0, 60.0),
-                52.0,
-                Mat::make_mat_lghtsrc(0.0, 0.0, 1.0),
-                Vec3::make_vec3(-100.0, 0.0, 0.0),
-            )),
+            )),*/
             Entity::Sph(Sphere::make_sphere(
                 origin + Vec3::make_vec3(0.0, 0.0, 2.0),
                 0.4,
@@ -360,7 +354,7 @@ impl World {
             Entity::Sph(Sphere::make_sphere(
                 origin + Vec3::make_vec3(0.0, 0.0, 0.0),
                 0.65,
-                Mat::make_mat_detc(1.0, 1.0, 0.6, 8.8),
+                Mat::make_mat_detc(1.0, 1.0, 0.6, 2.0),
                 origin,
             )),
             /*            Entity::Sph(Sphere::make_sphere(
@@ -370,17 +364,18 @@ impl World {
                 origin,
             )),*/
             Entity::Sph(Sphere::make_sphere(
-                origin + Vec3::make_vec3(-0.6, 0.0, 0.0),
+                origin + Vec3::make_vec3(0.0, 0.0, 0.0),
                 2.0,
                 Mat::make_mat_detc(1.0, 1.0, 1.0, 1.1),
                 origin,
             )),
+            /*
             Entity::Sph(Sphere::make_sphere(
                 origin + Vec3::make_vec3(0.0, 0.0, -4.0),
                 9.0,
                 Mat::make_mat_detc(1.0, 1.0, 1.0, 1.01),
                 origin,
-            )), /*
+            )), 
                 Entity::Sph(Sphere::make_sphere(
                     origin + Vec3::make_vec3(-0.6, 0.0, 0.0),
                     0.25,
@@ -394,22 +389,20 @@ impl World {
         World::gen(&mut new_list, 2.0);
         World::gen(&mut new_list, 3.0);
         World::gen(&mut new_list, 4.0);
-        World::gen_rec(
-            &mut new_list,
-            Vec3::make_vec3(40.0, 40.0, 40.0),
-            (
-                Vec3::make_vec3(-80.0, 0.0, 0.0),
-                Vec3::make_vec3(0.0, -80.0, 0.0),
-                Vec3::make_vec3(0.0, 0.0, -1.0),
-            ),
-            Mat::make_mat_lmb(0.4, 0.4, 0.5),
-            origin,
-        );
-
+		
+		World::gen_rec(&mut new_list,
+						Vec3::make_vec3(-50.0,-50.0,10.0),
+						(Vec3::make_vec3(100.0,0.0,0.0),
+						Vec3::make_vec3(100.0,0.0,0.0),
+						Vec3::make_vec3(0.0,0.0,1.0),),
+						Mat::make_mat_lghtsrc(1.0,1.0,1.0),
+						origin,
+		);
+/*
         let size_per_cell: f64 = 0.15;
         let ball_radius: f64 = 0.04;
         let max_offset: f64 = size_per_cell - 2.0 * ball_radius;
-        /*
+        
                 for i in -11..21 {
                     for j in -11..21 {
                         let do_or_not = rand_0_1();
@@ -498,9 +491,7 @@ impl World {
         }
 
         if first_hit_time < 0.0 {
-            Vec3::make_vec3(0.0, 0.0, 0.02)
-        //    let p: f64 = 0.5 * (target_ray.get_dir().y + 1.0);
-        //    (1.0 - p) * Vec3::make_vec3(0.6, 0.6, 0.6) + p * Vec3::make_vec3(0.5, 0.7, 1.0)
+            Vec3::make_vec3(0.0, 0.0, 0.0)
         } else {
             let target_color: Vec3 = target_obj.get_emission();
             if target_color.x == 0.0 && target_color.y == 0.0 && target_color.z == 0.0 {
