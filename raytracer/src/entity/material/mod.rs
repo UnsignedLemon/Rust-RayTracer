@@ -67,12 +67,13 @@ impl Scatter for Metal {
 //---------------------------    Struct Dielectric    ------------------------------------
 #[derive(Clone)]
 pub struct Dielectric {
+    pub albedo: Vec3,
     ir: f64,
 }
 
 impl Dielectric {
-    pub fn make_detc(ir: f64) -> Dielectric {
-        Dielectric { ir }
+    pub fn make_detc(albedo: Vec3, ir: f64) -> Dielectric {
+        Dielectric { albedo, ir }
     }
 
     fn reflectance(cos_theta: f64, ratio: f64) -> f64 {
@@ -145,9 +146,9 @@ impl Mat {
         Mat::Mtl(Metal::make_mtl(Vec3::make_vec3(x, y, z), fuzz))
     }
 
-    pub fn make_mat_detc(ir: f64) -> Mat {
+    pub fn make_mat_detc(x: f64, y: f64, z: f64, ir: f64) -> Mat {
         // Index of refraction only.
-        Mat::Detc(Dielectric::make_detc(ir))
+        Mat::Detc(Dielectric::make_detc(Vec3::make_vec3(x, y, z), ir))
     }
 
     pub fn make_mat_lghtsrc(x: f64, y: f64, z: f64) -> Mat {
@@ -174,7 +175,7 @@ impl Mat {
         match self {
             Mat::Lmb(tmp) => tmp.albedo,
             Mat::Mtl(tmp) => tmp.albedo,
-            Mat::Detc(tmp) => Vec3::make_vec3(1.0, 1.0, 1.0), // Pure glass.
+            Mat::Detc(tmp) => tmp.albedo,
             Mat::Lghtsrc(tmp) => origin,
         }
     }

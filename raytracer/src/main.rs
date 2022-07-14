@@ -30,7 +30,7 @@ const VIEWPORT_WIDTH: f64 = RATIO * VIEWPORT_HEIGHT;
 
 const height: u32 = HEIGHT as u32;
 const width: u32 = WIDTH as u32;
-const quality: u8 = 60; // From 0 to 100
+const quality: u8 = 100; // From 0 to 100
 
 const flash_t0: f64 = 0.0;
 const flash_t1: f64 = 1.0;
@@ -46,16 +46,16 @@ const origin: Vec3 = Vec3 {
 lazy_static::lazy_static! {
 
     static ref wld:World = World::make_world();
-    static ref cmr:Camera = Camera::make_camera(Vec3::make_vec3(0.0,0.1,0.0),
-                                                Vec3::make_vec3(-2.0,0.4,1.6),
-                                                std::f64::consts::PI / 6.0,
+    static ref cmr:Camera = Camera::make_camera(Vec3::make_vec3(0.0,0.0,0.0),
+                                                Vec3::make_vec3(-12.0,2.0,19.0),
+                                                std::f64::consts::PI / 3.5,
                                                 0.005, flash_t0, flash_t1,
     );
 }
 
 //--------------------------------     Render Parameters    ------------------------------
-const ITERATION_DEPTH: i32 = 100;
-const SAMPLES_PER_PIXEL: i32 = 500;
+const ITERATION_DEPTH: i32 = 50;
+const SAMPLES_PER_PIXEL: i32 = 1000;
 
 fn main() {
     //----------------------------------------    Init    --------------------------------
