@@ -22,7 +22,7 @@ use world::World;
 
 //---------------------------------    Camera & Picture    -------------------------------
 const RATIO: f64 = 16.0 / 9.0;
-const WIDTH: f64 = 1200.0;
+const WIDTH: f64 = 960.0;
 const HEIGHT: f64 = WIDTH / RATIO;
 
 const VIEWPORT_HEIGHT: f64 = 2.0;
@@ -54,8 +54,8 @@ lazy_static::lazy_static! {
 }
 
 //--------------------------------     Render Parameters    ------------------------------
-const ITERATION_DEPTH: i32 = 200;
-const SAMPLES_PER_PIXEL: i32 = 2000;
+const ITERATION_DEPTH: i32 = 100;
+const SAMPLES_PER_PIXEL: i32 = 800;
 
 fn main() {
     //----------------------------------------    Init    --------------------------------
