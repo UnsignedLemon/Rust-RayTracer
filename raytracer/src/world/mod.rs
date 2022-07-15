@@ -131,91 +131,6 @@ fn rotate(val: Vec3, f: f64) -> Vec3 {
 }
 
 impl World {
-    fn gen(obj_list: &mut Vec<Entity>, id: f64) {
-        let l1 = 2.2;
-        let z1 = 0.5;
-        let l2 = 3.0;
-        let z2 = 0.7;
-        let l3 = 8.0;
-        let z3 = 1.2;
-
-        let f = std::f64::consts::PI / 2.5 * id;
-
-        let tan36 = 0.726;
-        let v_ = Vec3::make_vec3(-0.0, 0.0, -30.0);
-
-        let v0 = rotate(Vec3::make_vec3(0.0, 0.0, -8.0), f);
-        let v1 = rotate(Vec3::make_vec3(0.0, -1.0, 1.0), f);
-        let v2 = rotate(Vec3::make_vec3(-l1 * tan36, -l1, z1), f);
-        let v3 = rotate(Vec3::make_vec3(l1 * tan36, -l1, z1), f);
-        let v4 = rotate(Vec3::make_vec3(-l2 * tan36, -l2, z2), f);
-        let v5 = rotate(Vec3::make_vec3(l2 * tan36, -l2, z2), f);
-        let v6 = rotate(Vec3::make_vec3(0.0, -l3, z3), f);
-        let inner = rotate(Vec3::make_vec3(0.0, -3.0, 0.0), f);
-
-        let mmat2: Mat = Mat::make_mat_mtl(1.0, 0.8, 0.9, 0.15);
-        let mmat: Mat = Mat::make_mat_detc(0.6, 0.6, 1.0, 1.5);
-        let mmat3: Mat = Mat::make_mat_detc(0.8, 0.8, 1.0, 6.0);
-
-        obj_list.push(Entity::Tri(Triangle::make_triangle(
-            v0,
-            v1,
-            v2,
-            inner,
-            mmat2.clone(),
-            origin,
-        )));
-        obj_list.push(Entity::Tri(Triangle::make_triangle(
-            v0,
-            v1,
-            v3,
-            inner,
-            mmat2.clone(),
-            origin,
-        )));
-        obj_list.push(Entity::Tri(Triangle::make_triangle(
-            v1,
-            v2,
-            v4,
-            inner,
-            mmat2.clone(),
-            origin,
-        )));
-        obj_list.push(Entity::Tri(Triangle::make_triangle(
-            v1, v3, v5, inner, mmat2, origin,
-        )));
-        obj_list.push(Entity::Tri(Triangle::make_triangle(
-            v4,
-            v1,
-            v6,
-            inner,
-            mmat.clone(),
-            origin,
-        )));
-        obj_list.push(Entity::Tri(Triangle::make_triangle(
-            v5, v1, v6, inner, mmat3, origin,
-        )));
-        obj_list.push(Entity::Tri(Triangle::make_triangle(
-            v0,
-            v4,
-            v6,
-            inner,
-            mmat.clone(),
-            origin,
-        )));
-        obj_list.push(Entity::Tri(Triangle::make_triangle(
-            v0,
-            v5,
-            v6,
-            inner,
-            mmat.clone(),
-            origin,
-        )));
-        obj_list.push(Entity::Tri(Triangle::make_triangle(
-            v4, v5, v_, inner, mmat, origin,
-        )));
-    }
-
     fn gen_rec(
         obj_list: &mut Vec<Entity>,
         pos: Vec3,
@@ -334,17 +249,120 @@ impl World {
         )));
     }
 
+    fn gen(obj_list: &mut Vec<Entity>, id: f64) {
+        let l1 = 2.2;
+        let z1 = 0.5;
+        let l2 = 3.0;
+        let z2 = 0.7;
+        let l3 = 8.0;
+        let z3 = 1.2;
+
+        let f = std::f64::consts::PI / 2.5 * id;
+
+        let tan36 = 0.726;
+        let v_ = Vec3::make_vec3(-0.0, 0.0, -30.0);
+
+        let v0 = rotate(Vec3::make_vec3(0.0, 0.0, -8.0), f);
+        let v1 = rotate(Vec3::make_vec3(0.0, -1.0, 1.0), f);
+        let v2 = rotate(Vec3::make_vec3(-l1 * tan36, -l1, z1), f);
+        let v3 = rotate(Vec3::make_vec3(l1 * tan36, -l1, z1), f);
+        let v4 = rotate(Vec3::make_vec3(-l2 * tan36, -l2, z2), f);
+        let v5 = rotate(Vec3::make_vec3(l2 * tan36, -l2, z2), f);
+        let v6 = rotate(Vec3::make_vec3(0.0, -l3, z3), f);
+        let inner = rotate(Vec3::make_vec3(0.0, -3.0, 0.0), f);
+
+        let mmat2: Mat = Mat::make_mat_mtl(0.3, 0.2, 0.8, 0.0);
+        let mmat: Mat = Mat::make_mat_detc(0.2, 0.3, 0.8, 2.2);
+        let mmat3: Mat = Mat::make_mat_detc(0.6, 0.6, 0.8, 3.2);
+
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v0,
+            v1,
+            v2,
+            inner,
+            mmat2.clone(),
+            origin,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v0,
+            v1,
+            v3,
+            inner,
+            mmat2.clone(),
+            origin,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v1,
+            v2,
+            v4,
+            inner,
+            mmat2.clone(),
+            origin,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v1, v3, v5, inner, mmat2, origin,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v4,
+            v1,
+            v6,
+            inner,
+            mmat.clone(),
+            origin,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v5, v1, v6, inner, mmat3, origin,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v0,
+            v4,
+            v6,
+            inner,
+            mmat.clone(),
+            origin,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v0,
+            v5,
+            v6,
+            inner,
+            mmat.clone(),
+            origin,
+        )));
+        obj_list.push(Entity::Tri(Triangle::make_triangle(
+            v4, v5, v_, inner, mmat, origin,
+        )));
+    }
+
     pub fn make_world() -> World {
         let bg: Entity = Entity::make_none_entity();
-        //Entity::Pln(Plain::make_plain(-10.0, Mat::make_mat_lghtsrc(0.5, 0.6, 0.8)));
+        //Entity::Pln(Plain::make_plain(-13.0, Mat::make_mat_mtl(0.0, 0.0, 0.05,0.0)));
 
         let mut new_list: Vec<Entity> = vec![
-     /*       Entity::Sph(Sphere::make_sphere(
-                origin + Vec3::make_vec3(0.0, 0.0, 60.0),
-                40.0,
-                Mat::make_mat_lghtsrc(0.9, 0.9, 1.0),
+            Entity::Sph(Sphere::make_sphere(
+                origin + Vec3::make_vec3(0.0, 80.0, 0.0),
+                28.0,
+                Mat::make_mat_lghtsrc(0.0, 0.0, 0.8),
                 origin,
-            )),*/
+            )),
+            Entity::Sph(Sphere::make_sphere(
+                origin + Vec3::make_vec3(0.0, -50.0, 0.0),
+                28.0,
+                Mat::make_mat_lghtsrc(0.0, 0.0, 0.8),
+                origin,
+            )), /*
+                Entity::Sph(Sphere::make_sphere(
+                    origin + Vec3::make_vec3(0.0, 20.0, 18.0),
+                    10.0,
+                    Mat::make_mat_lghtsrc(1.0, 1.0, 1.0),
+                    origin,
+                )),
+                Entity::Sph(Sphere::make_sphere(
+                    origin + Vec3::make_vec3(0.0, -20.0, 18.0),
+                    10.0,
+                    Mat::make_mat_lghtsrc(1.0, 1.0, 1.0),
+                    origin,
+                )),*/
             Entity::Sph(Sphere::make_sphere(
                 origin + Vec3::make_vec3(0.0, 0.0, 2.0),
                 0.4,
@@ -352,36 +370,17 @@ impl World {
                 origin,
             )),
             Entity::Sph(Sphere::make_sphere(
-                origin + Vec3::make_vec3(0.0, 0.0, 0.0),
-                0.65,
-                Mat::make_mat_detc(1.0, 1.0, 0.6, 2.0),
+                origin + Vec3::make_vec3(0.0, 0.0, 2.0),
+                0.45,
+                Mat::make_mat_detc(1.0, 0.8, 0.8, 1.5),
                 origin,
             )),
-            /*            Entity::Sph(Sphere::make_sphere(
-                origin + Vec3::make_vec3(0.6, 0.0, 0.0),
-                0.3,
-                Mat::make_mat_mtl(0.8, 0.8, 0.96, 0.3),
-                origin,
-            )),*/
             Entity::Sph(Sphere::make_sphere(
                 origin + Vec3::make_vec3(0.0, 0.0, 0.0),
-                2.0,
-                Mat::make_mat_detc(1.0, 1.0, 1.0, 1.1),
+                0.8,
+                Mat::make_mat_detc(0.8, 0.5, 0.4, 12.2),
                 origin,
             )),
-            /*
-            Entity::Sph(Sphere::make_sphere(
-                origin + Vec3::make_vec3(0.0, 0.0, -4.0),
-                9.0,
-                Mat::make_mat_detc(1.0, 1.0, 1.0, 1.01),
-                origin,
-            )), 
-                Entity::Sph(Sphere::make_sphere(
-                    origin + Vec3::make_vec3(-0.6, 0.0, 0.0),
-                    0.25,
-                    Mat::make_mat_detc(1.0 / 1.5),
-                    origin,
-                )),*/
         ];
 
         World::gen(&mut new_list, 0.0);
@@ -389,82 +388,60 @@ impl World {
         World::gen(&mut new_list, 2.0);
         World::gen(&mut new_list, 3.0);
         World::gen(&mut new_list, 4.0);
-		
-		World::gen_rec(&mut new_list,
-						Vec3::make_vec3(-50.0,-50.0,10.0),
-						(Vec3::make_vec3(100.0,0.0,0.0),
-						Vec3::make_vec3(100.0,0.0,0.0),
-						Vec3::make_vec3(0.0,0.0,1.0),),
-						Mat::make_mat_lghtsrc(1.0,1.0,1.0),
-						origin,
-		);
-/*
-        let size_per_cell: f64 = 0.15;
-        let ball_radius: f64 = 0.04;
-        let max_offset: f64 = size_per_cell - 2.0 * ball_radius;
-        
-                for i in -11..21 {
-                    for j in -11..21 {
-                        let do_or_not = rand_0_1();
-                        if do_or_not > 0.4 {
-                            continue;
-                        }
 
-                        let x: f64 = (i as f64) * size_per_cell + rand_0_1() * max_offset;
-                        let y: f64 = ball_radius + rand_0_1() * ball_radius - 0.3;
-                        let z: f64 = (j as f64) * size_per_cell + rand_0_1() * max_offset;
-                        let target_pos: Vec3 = Vec3::make_vec3(x, y, z);
+        for id in 0..5 {
+            let f = std::f64::consts::PI / 2.5 * id as f64;
+            let f2 = std::f64::consts::PI / 5.0 + f;
+            let g = std::f64::consts::PI / 8.0;
+            let f = f;
+            let f2 = f2;
 
-                        if dist(target_pos, origin) < 0.3 + ball_radius
-                            || dist(target_pos, Vec3::make_vec3(0.6, 0.0, 0.0)) < 0.3 + ball_radius
-                            || dist(target_pos, Vec3::make_vec3(-0.6, 0.0, 0.0)) < 0.3 + ball_radius
-                        {
-                            continue;
-                        }
+            let spd: Vec3 = Vec3::make_vec3(0.0, 0.0, 0.0);
+            World::gen_rec(
+                &mut new_list,
+                rotate(Vec3::make_vec3(-0.25, -2.0, 2.5), f),
+                (
+                    rotate(Vec3::make_vec3(0.5, 0.0, 0.0), f),
+                    rotate(Vec3::make_vec3(0.0, -0.5, 0.0), f),
+                    rotate(Vec3::make_vec3(0.0, 0.0, 1.7), f),
+                ),
+                Mat::make_mat_detc(0.7, 0.7, 0.9, 3.3),
+                rotate(spd, f),
+            );
+            World::gen_rec(
+                &mut new_list,
+                rotate(Vec3::make_vec3(-0.3, -3.4, 2.0), f2),
+                (
+                    rotate(Vec3::make_vec3(0.6, 0.0, 0.0), f2),
+                    rotate(Vec3::make_vec3(0.0, -0.2, 0.0), f2),
+                    rotate(Vec3::make_vec3(0.0, 0.0, 4.3), f2),
+                ),
+                Mat::make_mat_mtl(0.8, 0.8, 1.0, 0.0),
+                rotate(spd, f2),
+            );
+        }
 
-                        let rand_material = rand_0_1();
-                        let rand_albedo = Vec3::make_vec3(rand_0_1(), rand_0_1(), rand_0_1());
+        World::gen_rec(
+            &mut new_list,
+            Vec3::make_vec3(-75.0, -75.0, 20.0),
+            (
+                Vec3::make_vec3(150.0, 0.0, 0.0),
+                Vec3::make_vec3(0.0, 150.0, 0.0),
+                Vec3::make_vec3(0.0, 0.0, 1.0),
+            ),
+            Mat::make_mat_lghtsrc(1.0, 1.0, 1.0),
+            origin,
+        );
+        /*
+        World::gen_rec(&mut new_list,
+                        Vec3::make_vec3(-0.2,-0.2,2.0),
+                        (Vec3::make_vec3(0.4,0.0,0.0),
+                        Vec3::make_vec3(0.0,0.4,0.0),
+                        Vec3::make_vec3(0.0,0.0,40.0),),
+                        Mat::make_mat_lghtsrc(1.0,0.2,0.2),
+                        Vec3::make_vec3(5.0,5.0,0.0),
+        );		*/
 
-                        let rand_spd = Vec3::make_vec3(0.0, rand_0_1() * 0.07, 0.0);
-
-                        if rand_material > 0.85 {
-                            new_list.push(Entity::Sph(Sphere::make_sphere(
-                                target_pos,
-                                ball_radius,
-                                Mat::make_mat_lghtsrc(
-                                    rand_0_1() * 0.5 + 0.5,
-                                    rand_0_1() * 0.5 + 0.5,
-                                    rand_0_1() * 0.5 + 0.5,
-                                ),
-                                origin,
-                            )));
-                        }
-
-                        if rand_material > 0.75 {
-                            new_list.push(Entity::Sph(Sphere::make_sphere(
-                                target_pos,
-                                ball_radius,
-                                Mat::make_mat_detc(1.5),
-                                rand_spd,
-                            )));
-                        } else if rand_material > 0.6 {
-                            new_list.push(Entity::Sph(Sphere::make_sphere(
-                                target_pos,
-                                ball_radius,
-                                Mat::make_mat_mtl(rand_albedo.x, rand_albedo.y, rand_albedo.z, rand_0_1()),
-                                rand_spd,
-                            )));
-                        } else {
-                            new_list.push(Entity::Sph(Sphere::make_sphere(
-                                target_pos,
-                                ball_radius,
-                                Mat::make_mat_lmb(rand_albedo.x, rand_albedo.y, rand_albedo.z),
-                                rand_spd,
-                            )));
-                        }
-                    }
-                }
-        */
         let rt = build_bvh(new_list);
         World {
             bg,
@@ -491,7 +468,7 @@ impl World {
         }
 
         if first_hit_time < 0.0 {
-            Vec3::make_vec3(0.0, 0.0, 0.0)
+            Vec3::make_vec3(0.001, 0.001, 0.0005)
         } else {
             let target_color: Vec3 = target_obj.get_emission();
             if target_color.x == 0.0 && target_color.y == 0.0 && target_color.z == 0.0 {

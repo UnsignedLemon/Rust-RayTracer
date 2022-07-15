@@ -114,20 +114,20 @@ impl CanHit for Plain {
             target_ray.get_dir(),
             Vec3 {
                 x: 0.0,
-                y: -1.0,
-                z: 0.0,
+                y: 0.0,
+                z: -1.0,
             },
         );
         if product < 0.0 {
             -1.0
         } else {
-            let y_spd = -target_ray.get_dir().y;
-            (target_ray.get_pos().y - self.y) / y_spd
+            let z_spd = -target_ray.get_dir().z;
+            (target_ray.get_pos().z - self.y) / z_spd
         }
     }
 
     fn get_hit_normal(&self, pos: Vec3, tm: f64) -> Vec3 {
-        Vec3::make_vec3(0.0, 1.0, 0.0)
+        Vec3::make_vec3(0.0, 0.0, 1.0)
     }
 }
 
